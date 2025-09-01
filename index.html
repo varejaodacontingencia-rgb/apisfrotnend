@@ -400,6 +400,10 @@
         let perfisEmissores = [];
         let perfisAlvo = [];
 
+        function salvarPerfisNoLocalStorage() {
+            localStorage.setItem('perfisEmissores', JSON.stringify(perfisEmissores));
+        }
+
         // Função para adicionar perfil emissor
         function adicionarPerfil() {
             if (perfisEmissores.length >= 30) {
@@ -486,6 +490,7 @@
             perfisEmissores.splice(index, 1);
             atualizarListaPerfis();
             atualizarContadores();
+            salvarPerfisNoLocalStorage();
         }
 
         // Função para contar alvos
@@ -528,6 +533,8 @@
                 perfisEmissores = [];
                 atualizarListaPerfis();
                 atualizarContadores();
+                localStorage.removeItem('perfisEmissores');
+                salvarPerfisNoLocalStorage();
             }
         }
 
@@ -537,6 +544,7 @@
                 document.getElementById('alvos').value = '';
                 perfisAlvo = [];
                 atualizarContadores();
+                localStorage.removeItem('perfisAlvo');
             }
         }
 
@@ -580,6 +588,7 @@
                             atualizarListaPerfis();
                             atualizarContadores();
                             adicionarLog(`✅ ${perfisEmissores.length} perfis importados com sucesso!`);
+                            salvarPerfisNoLocalStorage();
                         }
                     } else {
                         alert('Arquivo JSON inválido!');
@@ -748,6 +757,7 @@
             atualizarListaPerfis();
             atualizarContadores();
             adicionarLog(`✅ Perfil ${uid} adicionado com sucesso!`);
+            salvarPerfisNoLocalStorage();
         }
 
         // Substituir a função original
@@ -794,6 +804,7 @@
             document.getElementById('alvos').value = perfisAlvo.join('\n');
 
             atualizarContadores();
+            localStorage.setItem('perfisAlvo', JSON.stringify(perfisAlvo));
         }
 
         // Substituir função original
@@ -989,6 +1000,20 @@
 
         // Event listener para validação da URL em tempo real
         document.addEventListener('DOMContentLoaded', function() {
+            const perfisSalvos = localStorage.getItem('perfisEmissores');
+            if (perfisSalvos) {
+                perfisEmissores = JSON.parse(perfisSalvos);
+                atualizarListaPerfis();
+                atualizarContadores();
+                adicionarLog(`📁 ${perfisEmissores.length} perfis carregados do armazenamento local.`);
+            }
+            const alvosSalvos = localStorage.getItem('perfisAlvo');
+            if (alvosSalvos) {
+                perfisAlvo = JSON.parse(alvosSalvos);
+                document.getElementById('alvos').value = perfisAlvo.join('\n');
+                atualizarContadores();
+                adicionarLog(`🎯 ${perfisAlvo.length} alvos carregados do armazenamento local.`);
+            }
             setupEnterKeyListeners();
             atualizarContadores();
             adicionarLog('🔥 Sistema iniciado! Pronto para uso.');
