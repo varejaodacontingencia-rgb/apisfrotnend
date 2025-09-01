@@ -469,31 +469,16 @@
 
         // Função para adicionar perfil emissor
         function adicionarPerfil() {
-            if (perfisEmissores.length >= 30) {
-                alert('Máximo de 30 perfis emissores atingido!');
-                return;
-            }
+            const novoPerfil = {
+                uid: document.getElementById("uid").value,
+                cookie: document.getElementById("cookie").value,
+                fb_dtsg: document.getElementById("fb_dtsg").value,
+                lsd: document.getElementById("lsd").value,
+                jazoest: document.getElementById("jazoest").value,
+            };
 
-            const uid = document.getElementById('uid').value.trim();
-            const cookie = document.getElementById('cookie').value.trim();
-            const fb_dtsg = document.getElementById('fb_dtsg').value.trim();
-            const lsd = document.getElementById('lsd').value.trim();
-            const jazoest = document.getElementById('jazoest').value.trim();
-
-            // Validação
-            if (!uid || !cookie || !fb_dtsg || !lsd || !jazoest) {
-                alert('Todos os campos são obrigatórios!');
-                return;
-            }
-
-            // Verificar se UID já existe
-            if (perfisEmissores.some(p => p.uid === uid)) {
-                alert('Este UID já foi cadastrado!');
-                return;
-            }
-
-            const perfil = { uid, cookie, fb_dtsg, lsd, jazoest };
-            perfisEmissores.push(perfil);
+            perfisEmissores.push(novoPerfil);
+            console.log("Perfil adicionado:", novoPerfil);
 
             // Limpar formulário
             document.getElementById('uid').value = '';
@@ -775,69 +760,6 @@
         function validarUID(uid) {
             return /^\d+$/.test(uid) && uid.length >= 10;
         }
-
-        // Melhorar validação do perfil
-        function adicionarPerfilMelhorado() {
-            if (perfisEmissores.length >= 30) {
-                alert('Máximo de 30 perfis emissores atingido!');
-                return;
-            }
-
-            const uid = document.getElementById('uid').value.trim();
-            const cookie = document.getElementById('cookie').value.trim();
-            const fb_dtsg = document.getElementById('fb_dtsg').value.trim();
-            const lsd = document.getElementById('lsd').value.trim();
-            const jazoest = document.getElementById('jazoest').value.trim();
-
-            // Validações específicas
-            if (!uid || !validarUID(uid)) {
-                alert('UID inválido! Deve conter apenas números e ter pelo menos 10 dígitos.');
-                return;
-            }
-
-            if (!cookie || !cookie.includes('c_user=')) {
-                alert('Cookie inválido! Deve conter pelo menos "c_user="');
-                return;
-            }
-
-            if (!fb_dtsg || fb_dtsg.length < 10) {
-                alert('fb_dtsg muito curto! Verifique se copiou corretamente.');
-                return;
-            }
-
-            if (!lsd) {
-                alert('Campo LSD é obrigatório!');
-                return;
-            }
-
-            if (!jazoest || !/^\d+$/.test(jazoest)) {
-                alert('Jazoest deve conter apenas números!');
-                return;
-            }
-
-            // Verificar se UID já existe
-            if (perfisEmissores.some(p => p.uid === uid)) {
-                alert('Este UID já foi cadastrado!');
-                return;
-            }
-
-            const perfil = { uid, cookie, fb_dtsg, lsd, jazoest };
-            perfisEmissores.push(perfil);
-
-            // Limpar formulário
-            document.getElementById('uid').value = '';
-            document.getElementById('cookie').value = '';
-            document.getElementById('fb_dtsg').value = '';
-            document.getElementById('lsd').value = '';
-            document.getElementById('jazoest').value = '';
-
-            atualizarListaPerfis();
-            atualizarContadores();
-            adicionarLog(`✅ Perfil ${uid} adicionado com sucesso!`);
-        }
-
-        // Substituir a função original
-        window.adicionarPerfil = adicionarPerfilMelhorado;
 
         // Função para validar e processar alvos
         function contarAlvosMelhorado() {
