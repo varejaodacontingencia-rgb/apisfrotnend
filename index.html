@@ -253,6 +253,7 @@
             }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="container">
@@ -321,6 +322,9 @@
                 </button>
                 <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
                     <i class="fas fa-upload"></i> Importar Perfis
+                </button>
+                <button class="btn btn-secondary" onclick="carregarPerfisSupabase()">
+                    <i class="fas fa-cloud-download-alt"></i> Carregar do Supabase
                 </button>
                 <button class="btn btn-outline-danger" onclick="limparPerfis()">
                     <i class="fas fa-trash"></i> Limpar Todos
@@ -396,6 +400,69 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
+        const supabase = supabase.createClient(
+            'https://xwdfwromprftbnfrcgmb.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3ZGZ3cm9tcHJmdGJuZnJjZ21iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY3MzI2NjIsImV4cCI6MjA3MjMwODY2Mn0.PPuZXLMkdVsrBq2z5pQjs6xHYYOgTkFoJNiTwXPiBcw'
+        );
+
+        async function salvarPerfilNoSupabase(perfil) {
+            const { data, error } = await supabase
+                .from('facebook_senders')
+                .insert([perfil]);
+
+            if (error) {
+                console.error('❌ Erro ao salvar perfil:', error);
+                mostrarToast(`Erro ao salvar perfil ${perfil.uid}: ${error.message}`, 'error');
+            } else {
+                mostrarToast(`Perfil ${perfil.uid} salvo no Supabase com sucesso!`, 'success');
+                const inserted = data[0];
+                const localIndex = perfisEmissores.findIndex(p => p.uid === inserted.uid);
+                if (localIndex !== -1) {
+                    perfisEmissores[localIndex].id = inserted.id;
+                    atualizarListaPerfis();
+                }
+            }
+        }
+
+        async function listarPerfisDoSupabase() {
+            const { data, error } = await supabase
+                .from('facebook_senders')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(30);
+
+            if (error) {
+                console.error('❌ Erro ao listar perfis:', error);
+                mostrarToast('Erro ao buscar perfis: ' + error.message, 'error');
+                return [];
+            }
+
+            console.log('📋 Perfis encontrados:', data);
+            return data;
+        }
+
+        async function excluirPerfilSupabase(id) {
+            if (!confirm('Deseja realmente excluir este perfil do Supabase?')) {
+                return;
+            }
+            const perfil = perfisEmissores.find(p => p.id === id);
+            const uid = perfil ? perfil.uid : 'desconhecido';
+            const { error } = await supabase
+                .from('facebook_senders')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                console.error('❌ Erro ao excluir perfil:', error);
+                mostrarToast(`Erro ao excluir perfil ${uid}: ${error.message}`, 'error');
+            } else {
+                mostrarToast(`Perfil ${uid} excluído com sucesso!`, 'success');
+                perfisEmissores = perfisEmissores.filter(p => p.id !== id);
+                atualizarListaPerfis();
+                atualizarContadores();
+            }
+        }
+
         // Estados da aplicação
         let perfisEmissores = [];
         let perfisAlvo = [];
@@ -476,6 +543,10 @@
                             <strong>Jazoest:</strong><br>
                             <code>${perfil.jazoest}</code>
                         </div>
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-success btn-sm" onclick="salvarPerfilNoSupabase(perfisEmissores[${index}])">Salvar no Supabase</button>
+                        ${perfil.id ? `<button class="btn btn-danger btn-sm ms-2" onclick="excluirPerfilSupabase('${perfil.id}')">Excluir do Supabase</button>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -1078,6 +1149,16 @@
             
             URL.revokeObjectURL(url);
             mostrarToast('Relatório baixado!', 'success');
+        }
+
+        async function carregarPerfisSupabase() {
+            const novosPerfis = await listarPerfisDoSupabase();
+            const uidsExistentes = new Set(perfisEmissores.map(p => p.uid));
+            const perfisAdicionados = novosPerfis.filter(p => !uidsExistentes.has(p.uid));
+            perfisEmissores.push(...perfisAdicionados);
+            atualizarListaPerfis();
+            atualizarContadores();
+            mostrarToast(`Carregados ${novosPerfis.length} perfis (adicionados ${perfisAdicionados.length} novos)`, 'success');
         }
     </script>
 </body>
