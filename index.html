@@ -729,21 +729,6 @@
                 return;
             }
 
-            if (!fb_dtsg || fb_dtsg.length < 10) {
-                alert('fb_dtsg muito curto! Verifique se copiou corretamente.');
-                return;
-            }
-
-            if (!lsd) {
-                alert('Campo LSD é obrigatório!');
-                return;
-            }
-
-            if (!jazoest || !/^\d+$/.test(jazoest)) {
-                alert('Jazoest deve conter apenas números!');
-                return;
-            }
-
             // Verificar se UID já existe
             if (perfisEmissores.some(p => p.uid === uid)) {
                 alert('Este UID já foi cadastrado!');
