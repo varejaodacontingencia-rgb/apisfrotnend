@@ -16,317 +16,314 @@
             --dark-color: #212529;
         }
 
-    body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
+.container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    margin: 20px auto;
+    padding: 30px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 20px 0;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.header h1 {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.section-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.section-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    color: var(--dark-color);
+    font-weight: 600;
+}
+
+.section-title i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.perfil-card {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.perfil-card:hover {
+    background: #e9ecef;
+}
+
+.btn-remove-perfil {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--danger-color);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-remove-perfil:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), #4267B2);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3);
+}
+
+.btn-success {
+    background: linear-gradient(45deg, var(--success-color), #28a745);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(25, 135, 84, 0.3);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    border: none;
+    border-radius: 25px;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+}
+
+.counter {
+    background: var(--primary-color);
+    color: white;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 0.9em;
+    font-weight: 600;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.logs-area {
+    background: #1e1e1e;
+    color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    font-family: 'Courier New', monospace;
+    max-height: 400px;
+    overflow-y: auto;
+    border: none;
+    white-space: pre-wrap;
+}
+
+.loading {
+    display: none;
+    text-align: center;
+    padding: 20px;
+}
+
+.loading.show {
+    display: block;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(24, 119, 242, 0.25);
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2em;
+    font-weight: 700;
+    display: block;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    opacity: 0.9;
+}
+
+.import-export-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.hidden-file-input {
+    display: none;
+}
+
+@media (max-width: 768px) {
     .container {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(10px);
-        margin: 20px auto;
-        padding: 30px;
-    }
-
-    .header {
-        text-align: center;
-        margin-bottom: 40px;
-        padding: 20px 0;
-        border-bottom: 2px solid #e9ecef;
-    }
-
-    .header h1 {
-        color: var(--primary-color);
-        font-weight: 700;
-        margin-bottom: 10px;
-    }
-
-    .section-card {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        margin-bottom: 25px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e9ecef;
-        transition: all 0.3s ease;
-    }
-
-    .section-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-    }
-
-    .section-title {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-        color: var(--dark-color);
-        font-weight: 600;
-    }
-
-    .section-title i {
-        margin-right: 10px;
-        color: var(--primary-color);
-    }
-
-    .perfil-card {
-        background: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 10px;
-        padding: 15px;
-        margin-bottom: 15px;
-        position: relative;
-        transition: all 0.3s ease;
-    }
-
-    .perfil-card:hover {
-        background: #e9ecef;
-    }
-
-    .btn-remove-perfil {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: var(--danger-color);
-        border: none;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .btn-remove-perfil:hover {
-        background: #c82333;
-        transform: scale(1.1);
-    }
-
-    .btn-primary {
-        background: linear-gradient(45deg, var(--primary-color), #4267B2);
-        border: none;
-        border-radius: 25px;
-        padding: 12px 30px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3);
-    }
-
-    .btn-success {
-        background: linear-gradient(45deg, var(--success-color), #28a745);
-        border: none;
-        border-radius: 25px;
-        padding: 12px 30px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .btn-success:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(25, 135, 84, 0.3);
-    }
-
-    .btn-secondary {
-        background: #6c757d;
-        border: none;
-        border-radius: 25px;
-        padding: 8px 20px;
-        transition: all 0.3s ease;
-    }
-
-    .counter {
-        background: var(--primary-color);
-        color: white;
-        border-radius: 20px;
-        padding: 5px 15px;
-        font-size: 0.9em;
-        font-weight: 600;
-        display: inline-block;
-        margin-left: 10px;
-    }
-
-    .logs-area {
-        background: #1e1e1e;
-        color: #f8f9fa;
-        border-radius: 10px;
-        padding: 20px;
-        font-family: 'Courier New', monospace;
-        max-height: 400px;
-        overflow-y: auto;
-        border: none;
-        white-space: pre-wrap;
-    }
-
-    .loading {
-        display: none;
-        text-align: center;
+        margin: 10px;
         padding: 20px;
     }
-
-    .loading.show {
-        display: block;
-    }
-
-    .spinner {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid var(--primary-color);
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 10px;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(24, 119, 242, 0.25);
-    }
-
-    .alert {
-        border-radius: 10px;
-        border: none;
-    }
-
+    
     .stats {
-        display: flex;
-        justify-content: space-around;
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        color: white;
-        border-radius: 15px;
-        padding: 20px;
-        margin-bottom: 25px;
+        flex-direction: column;
+        gap: 15px;
     }
-
-    .stat-item {
-        text-align: center;
-    }
-
-    .stat-number {
-        font-size: 2em;
-        font-weight: 700;
-        display: block;
-    }
-
-    .stat-label {
-        font-size: 0.9em;
-        opacity: 0.9;
-    }
-
+    
     .import-export-buttons {
-        display: flex;
-        gap: 10px;
-        margin-top: 15px;
+        flex-direction: column;
     }
-
-    .hidden-file-input {
-        display: none;
-    }
-
-    @media (max-width: 768px) {
-        .container {
-            margin: 10px;
-            padding: 20px;
-        }
-        
-        .stats {
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .import-export-buttons {
-            flex-direction: column;
-        }
-    }
-</style></head>
-<body>
+}</style></head><body>
     <div class="container">
         <div class="header">
             <h1><i class="fab fa-facebook"></i> Automação Facebook</h1>
             <p class="text-muted">Plataforma para envio automático de solicitações de amizade</p>
         </div>
 
-    <!-- Estatísticas -->
-    <div class="stats">
-        <div class="stat-item">
-            <span class="stat-number" id="countEmissores">0</span>
-            <span class="stat-label">Perfis Emissores</span>
+<!-- Estatísticas -->
+<div class="stats">
+    <div class="stat-item">
+        <span class="stat-number" id="countEmissores">0</span>
+        <span class="stat-label">Perfis Emissores</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-number" id="countAlvos">0</span>
+        <span class="stat-label">Perfis Alvo</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-number" id="totalRequests">0</span>
+        <span class="stat-label">Total de Requests</span>
+    </div>
+</div>
+
+<!-- Seção Perfis Emissores -->
+<div class="section-card">
+    <h3 class="section-title">
+        <i class="fas fa-user-plus"></i>
+        Perfis Emissores
+        <span class="counter" id="emissorCounter">0/50</span>
+    </h3>
+
+    <div class="row">
+        <div class="col-md-2">
+            <label class="form-label">UID (c_user)</label>
+            <input type="text" class="form-control" id="uid" placeholder="Ex: 100012345678901">
         </div>
-        <div class="stat-item">
-            <span class="stat-number" id="countAlvos">0</span>
-            <span class="stat-label">Perfis Alvo</span>
+        <div class="col-md-6">
+            <label class="form-label">Cookie (completo)</label>
+            <input type="text" class="form-control" id="cookie" placeholder="datr=...; sb=...; ps_l=...; c_user=...">
         </div>
-        <div class="stat-item">
-            <span class="stat-number" id="totalRequests">0</span>
-            <span class="stat-label">Total de Requests</span>
+        <div class="col-md-2">
+            <label class="form-label">fb_dtsg</label>
+            <input type="text" class="form-control" id="fb_dtsg" placeholder="NAcOe...">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">LSD</label>
+            <input type="text" class="form-control" id="lsd" placeholder="AVr...">
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-2">
+            <label class="form-label">Jazoest</label>
+            <input type="text" class="form-control" id="jazoest" placeholder="2957">
+        </div>
+        <div class="col-md-10 d-flex align-items-end">
+            <button class="btn btn-primary me-2" onclick="adicionarPerfil()">
+                <i class="fas fa-plus"></i> Adicionar Perfil
+            </button>
         </div>
     </div>
 
-    <!-- Seção Perfis Emissores -->
-    <div class="section-card">
-        <h3 class="section-title">
-            <i class="fas fa-user-plus"></i>
-            Perfis Emissores
-            <span class="counter" id="emissorCounter">0/50</span>
-        </h3>
-
-        <div class="row">
-            <div class="col-md-2">
-                <label class="form-label">UID (c_user)</label>
-                <input type="text" class="form-control" id="uid" placeholder="Ex: 100012345678901">
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Cookie (completo)</label>
-                <input type="text" class="form-control" id="cookie" placeholder="datr=...; sb=...; ps_l=...; c_user=...">
-            </div>
-            <div class="col-md-2">
-                <label class="form-label">fb_dtsg</label>
-                <input type="text" class="form-control" id="fb_dtsg" placeholder="NAcOe...">
-            </div>
-            <div class="col-md-2">
-                <label class="form-label">LSD</label>
-                <input type="text" class="form-control" id="lsd" placeholder="AVr...">
-            </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-md-2">
-                <label class="form-label">Jazoest</label>
-                <input type="text" class="form-control" id="jazoest" placeholder="2957">
-            </div>
-            <div class="col-md-10 d-flex align-items-end">
-                <button class="btn btn-primary me-2" onclick="adicionarPerfil()">
-                    <i class="fas fa-plus"></i> Adicionar Perfil
-                </button>
-            </div>
-        </div>
-
-        <div class="import-export-buttons">
-            <button class="btn btn-secondary" onclick="exportarPerfis()">
-                <i class="fas fa-download"></i> Exportar Perfis
-            </button>
-            <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
-                <i class="fas fa-upload"></i> Importar Perfis
-            </button>
-            <button class="btn btn-outline-danger" onclick="limparPerfis()">
-                <i class="fas fa-trash"></i> Limpar Todos
-            </button>
-        </div>
-        <input type="file" id="fileInput" class="hidden-file-input" accept=".json" onchange="importarPerfis(event)">
-<div class="mt-4">
+    <div class="import-export-buttons">
+        <button class="btn btn-secondary" onclick="exportarPerfis()">
+            <i class="fas fa-download"></i> Exportar Perfis
+        </button>
+        <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+            <i class="fas fa-upload"></i> Importar Perfis
+        </button>
+        <button class="btn btn-outline-danger" onclick="limparPerfis()">
+            <i class="fas fa-trash"></i> Limpar Todos
+        </button>
+    </div>
+    <input type="file" id="fileInput" class="hidden-file-input" accept=".json" onchange="importarPerfis(event)"><div class="mt-4">
     <label class="form-label"><strong>Importação Rápida</strong></label>
     <textarea class="form-control" id="importacaoRapida" rows="8" placeholder="Cole aqui os dados dos perfis (ex: perfil 1\n1000123...\ncookie=...;)"></textarea>
     <button class="btn btn-success mt-2" onclick="importarViaTexto()">
@@ -334,8 +331,7 @@
     </button>
 </div>
 
-        <div id="perfisLista" class="mt-4"></div>
-<div class="mb-4">
+    <div id="perfisLista" class="mt-4"></div><div class="mb-4">
     <label class="form-label"><strong>Selecionar emissores para envio:</strong></label>
     <div id="selecionar-emissores" class="form-check"></div>
     <div class="form-check">
@@ -344,70 +340,69 @@
     </div>
 </div>
 
+</div>
+
+<!-- Seção Perfis Alvo -->
+<div class="section-card">
+    <h3 class="section-title">
+        <i class="fas fa-bullseye"></i>
+        Perfis Alvo
+        <span class="counter" id="alvoCounter">0/50</span>
+    </h3>
+    
+    <div class="mb-3">
+        <label class="form-label">UIDs dos perfis alvo (um por linha ou separados por vírgula)</label>
+        <textarea class="form-control" id="alvos" rows="6" 
+            placeholder="100012345678901&#10;100012345678902&#10;100012345678903&#10;...ou...&#10;100012345678901, 100012345678902, 100012345678903"
+            oninput="contarAlvos()"></textarea>
+        <small class="text-muted">Máximo: 50 perfis alvo</small>
     </div>
 
-    <!-- Seção Perfis Alvo -->
-    <div class="section-card">
-        <h3 class="section-title">
-            <i class="fas fa-bullseye"></i>
-            Perfis Alvo
-            <span class="counter" id="alvoCounter">0/50</span>
-        </h3>
-        
-        <div class="mb-3">
-            <label class="form-label">UIDs dos perfis alvo (um por linha ou separados por vírgula)</label>
-            <textarea class="form-control" id="alvos" rows="6" 
-                placeholder="100012345678901&#10;100012345678902&#10;100012345678903&#10;...ou...&#10;100012345678901, 100012345678902, 100012345678903"
-                oninput="contarAlvos()"></textarea>
-            <small class="text-muted">Máximo: 50 perfis alvo</small>
-        </div>
+    <button class="btn btn-outline-danger" onclick="limparAlvos()">
+        <i class="fas fa-trash"></i> Limpar Alvos
+    </button>
+</div>
 
-        <button class="btn btn-outline-danger" onclick="limparAlvos()">
-            <i class="fas fa-trash"></i> Limpar Alvos
-        </button>
-    </div>
-
-    <!-- URL da API -->
-    <div class="section-card">
-        <h3 class="section-title">
-            <i class="fas fa-server"></i>
-            Configuração da API
-        </h3>
-        
-        <div class="mb-3">
-            <label class="form-label">URL da API</label>
-            <input type="url" class="form-control" id="apiUrl" 
-                value="https://SEU_PROJETO.vercel.app/api/send-requests"
-                placeholder="https://seu-projeto.vercel.app/api/send-requests">
-            <small class="text-muted">Substitua "SEU_PROJETO" pelo nome real do seu projeto no Vercel</small>
-        </div>
-    </div>
-
-    <!-- Botões de Ação -->
-    <div class="text-center mb-4">
-        <button class="btn btn-success btn-lg me-3" onclick="enviarRequisicoes()" id="btnEnviar">
-            <i class="fas fa-paper-plane"></i> Enviar Solicitações
-        </button>
-        <button class="btn btn-outline-secondary" onclick="limparLogs()">
-            <i class="fas fa-broom"></i> Limpar Logs
-        </button>
-    </div>
-
-    <!-- Loading -->
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <p>Enviando solicitações de amizade...</p>
-    </div>
-
-    <!-- Logs -->
-    <div class="section-card">
-        <h3 class="section-title">
-            <i class="fas fa-terminal"></i>
-            Logs de Execução
-        </h3>
-        <div class="logs-area" id="logs">Aguardando execução...</div>
+<!-- URL da API -->
+<div class="section-card">
+    <h3 class="section-title">
+        <i class="fas fa-server"></i>
+        Configuração da API
+    </h3>
+    
+    <div class="mb-3">
+        <label class="form-label">URL da API</label>
+        <input type="url" class="form-control" id="apiUrl" 
+            value="https://SEU_PROJETO.vercel.app/api/send-requests"
+            placeholder="https://seu-projeto.vercel.app/api/send-requests">
+        <small class="text-muted">Substitua "SEU_PROJETO" pelo nome real do seu projeto no Vercel</small>
     </div>
 </div>
+
+<!-- Botões de Ação -->
+<div class="text-center mb-4">
+    <button class="btn btn-success btn-lg me-3" onclick="enviarRequisicoes()" id="btnEnviar">
+        <i class="fas fa-paper-plane"></i> Enviar Solicitações
+    </button>
+    <button class="btn btn-outline-secondary" onclick="limparLogs()">
+        <i class="fas fa-broom"></i> Limpar Logs
+    </button>
+</div>
+
+<!-- Loading -->
+<div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>Enviando solicitações de amizade...</p>
+</div>
+
+<!-- Logs -->
+<div class="section-card">
+    <h3 class="section-title">
+        <i class="fas fa-terminal"></i>
+        Logs de Execução
+    </h3>
+    <div class="logs-area" id="logs">Aguardando execução...</div>
+</div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -700,7 +695,7 @@ perfisEmissores.forEach((perfil, index) => {
         adicionarLog(` API: ${apiUrl}\n`);
 
         try {
-            await enviarEmBlocos(emissoresSelecionados, perfisAlvo, apiUrl);
+            await enviarBlocosDePerfis(emissoresSelecionados, perfisAlvo, apiUrl);
         } catch (error) {
             adicionarLog(` Erro de conexão: ${error.message}`);
             mostrarToast(`Erro: ${error.message}`, 'error');
@@ -964,7 +959,7 @@ document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked"
         adicionarLog(` API: ${apiUrl}\n`);
 
         try {
-            await enviarEmBlocos(emissoresSelecionados, perfisAlvo, apiUrl);
+            await enviarBlocosDePerfis(emissoresSelecionados, perfisAlvo, apiUrl);
         } catch (error) {
             adicionarLog(` Erro de conexão: ${error.message}`);
             mostrarToast(`Erro: ${error.message}`, 'error');
@@ -1131,81 +1126,49 @@ atualizarContadores();
 salvarPerfisNoLocalStorage();
 
 mostrarToast(` ${perfisImportados} perfis importados via texto!`, 'success');
-adicionarLog(` Importação rápida: ${perfisImportados} perfis adicionados via campo de texto.`);}
+adicionarLog(` Importação rápida: ${perfisImportados} perfis adicionados via campo de texto.`);}async function enviarBlocosDePerfis(emissores, alvos, endpoint) {
+  const BLOCOS = [];
+  const TAMANHO_BLOCO = 5;
+  const INTERVALO_MS = 10000; // 10 segundos entre blocos  // Dividir emissores em blocos de 5
+  for (let i = 0; i < emissores.length; i += TAMANHO_BLOCO) {
+    BLOCOS.push(emissores.slice(i, i + TAMANHO_BLOCO));
+  }  adicionarLog(" Total de emissores: " + emissores.length);
+  adicionarLog(" Total de blocos: " + BLOCOS.length);
+  adicionarLog(" Intervalo entre blocos: 10s");
+  adicionarLog("───────────────────────────────");  for (let i = 0; i < BLOCOS.length; i++) {
+    const bloco = BLOCOS[i];adicionarLog(` Enviando bloco ${i + 1} de ${BLOCOS.length}...`);
+adicionarLog(` ${bloco.length} emissores →  ${alvos.length} alvos`);
 
-// Delay entre os blocos (60 segundos)
-const DELAY_ENTRE_BLOCOS_MS = 60000;
+try {
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      emissores: bloco,
+      alvos: alvos
+    })
+  });
 
-// Função delay com Promise
-const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-// Função para enviar os blocos sequencialmente
-async function enviarEmBlocos(emissores, alvos, apiUrl) {
-  const blocos = [];
-
-  // Dividir emissores em blocos de 25
-  for (let i = 0; i < emissores.length; i += 25) {
-    blocos.push(emissores.slice(i, i + 25));
+  if (!res.ok) {
+    throw new Error(`Erro HTTP: ${res.status}`);
   }
 
-  adicionarLog(`🔄 Total de emissores: ${emissores.length}`);
-  adicionarLog(`📦 Total de blocos: ${blocos.length}`);
-  adicionarLog(`⏱️ Intervalo entre blocos: ${DELAY_ENTRE_BLOCOS_MS / 1000}s`);
-  adicionarLog("───────────────────────────────");
+  const resultado = await res.json();
 
-  for (let i = 0; i < blocos.length; i++) {
-    const bloco = blocos[i];
-    adicionarLog(`🚀 Enviando bloco ${i + 1} de ${blocos.length}...`);
-    adicionarLog(`👤 ${bloco.length} emissores → 🎯 ${alvos.length} alvos`);
-
-    try {
-      const resposta = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ emissores: bloco, alvos })
-      });
-
-      const resultado = await resposta.json();
-
-      if (resultado.logs && Array.isArray(resultado.logs)) {
-        resultado.logs.forEach((log) => {
-          adicionarLog(typeof log === 'string' ? log : JSON.stringify(log));
-        });
-      }
-
-      // Mostrar resumo visual
-      if (resultado.resumo) {
-        adicionarLog("───────────────────────────────");
-        adicionarLog("📊 RESUMO FINAL 📊");
-        adicionarLog(`✅ Sucessos: ${resultado.resumo.sucessos}`);
-        adicionarLog(`❌ Erros: ${resultado.resumo.erros}`);
-        adicionarLog(`📈 Taxa de Sucesso: ${resultado.resumo.taxa_sucesso}`);
-        adicionarLog("───────────────────────────────");
-      }
-
-      // Mostrar erros detalhados
-      if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
-        if (resultado.errosDetalhados.length > 0) {
-          adicionarLog("❌ UIDs com erro:");
-          resultado.errosDetalhados.forEach((erro, i) => {
-            adicionarLog(`🚫 UID: ${erro.perfil}`);
-          });
-        }
-      }
-
-    } catch (err) {
-      adicionarLog(`❌ Erro ao enviar bloco ${i + 1}: ${err.message}`);
-    }
-
-    if (i < blocos.length - 1) {
-      adicionarLog(`⏳ Aguardando ${DELAY_ENTRE_BLOCOS_MS / 1000}s antes do próximo bloco...`);
-      await esperar(DELAY_ENTRE_BLOCOS_MS);
-    }
+  if (resultado.logs && Array.isArray(resultado.logs)) {
+    resultado.logs.forEach(log => adicionarLog(typeof log === "string" ? log : JSON.stringify(log, null, 2)));
   }
 
-  adicionarLog("✅ Todos os blocos foram processados.");
+} catch (err) {
+  adicionarLog(` Erro ao enviar bloco ${i + 1}: ${err.message}`);
+}
+
+if (i < BLOCOS.length - 1) {
+  adicionarLog(" Aguardando 10s antes do próximo bloco...");
+  await new Promise(resolve => setTimeout(resolve, INTERVALO_MS));
+}  }  adicionarLog(" Todos os blocos foram processados.\n\n Processo finalizado.");
 }
 </script></body>
-</html>
+</html>Sorry about that, something didn't go as planned. Please try again, and if you're still seeing this message, go ahead and restart the app.Sorry about that, something didn't go as planned. Please try again, and if you're still seeing this message, go ahead and restart the app.
