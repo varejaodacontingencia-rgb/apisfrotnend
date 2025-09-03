@@ -707,13 +707,6 @@ perfisEmissores.forEach((perfil, index) => {
 
             // Processar logs da resposta
             // Mostrar logs detalhados
-if (resultado.logs && Array.isArray(resultado.logs)) {
-  resultado.logs.forEach(log => {
-    const logStr = typeof log === 'string' ? log : JSON.stringify(log, null, 2);
-    adicionarLog(logStr);
-  });
-}
-
 // Mostrar resumo visual
 if (resultado.resumo) {
   adicionarLog("───────────────────────────────");
@@ -724,17 +717,15 @@ if (resultado.resumo) {
   adicionarLog("───────────────────────────────");
 }
 
-// Mostrar erros detalhados
+// Mostrar somente os UIDs dos perfis com erro
 if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
-  adicionarLog("❌ Erros Detalhados:");
+  adicionarLog("❌ Perfis com erro:");
 
   resultado.errosDetalhados.forEach((erro, i) => {
-    adicionarLog(`\n[${i + 1}]`);
-    adicionarLog(`👤 Emissor: ${erro.perfil}`);
-    adicionarLog(`🎯 Alvo: ${erro.alvo}`);
-    adicionarLog(`⚠️ Erro: ${erro.erro}`);
+    adicionarLog(`\n[${i + 1}] 🔴 UID do Emissor com erro: ${erro.perfil}`);
   });
 }
+
 
             // Mostrar resumo
             if (resultado.resumo) {
@@ -1040,13 +1031,6 @@ document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked"
 
             // Processar logs da resposta
             // Mostrar logs detalhados
-if (resultado.logs && Array.isArray(resultado.logs)) {
-  resultado.logs.forEach(log => {
-    const logStr = typeof log === 'string' ? log : JSON.stringify(log, null, 2);
-    adicionarLog(logStr);
-  });
-}
-
 // Mostrar resumo visual
 if (resultado.resumo) {
   adicionarLog("───────────────────────────────");
@@ -1057,17 +1041,15 @@ if (resultado.resumo) {
   adicionarLog("───────────────────────────────");
 }
 
-// Mostrar erros detalhados
+// Mostrar somente os UIDs dos perfis com erro
 if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
-  adicionarLog("❌ Erros Detalhados:");
+  adicionarLog("❌ Perfis com erro:");
 
   resultado.errosDetalhados.forEach((erro, i) => {
-    adicionarLog(`\n[${i + 1}]`);
-    adicionarLog(`👤 Emissor: ${erro.perfil}`);
-    adicionarLog(`🎯 Alvo: ${erro.alvo}`);
-    adicionarLog(`⚠️ Erro: ${erro.erro}`);
+    adicionarLog(`\n[${i + 1}] 🔴 UID do Emissor com erro: ${erro.perfil}`);
   });
 }
+
 
 
 
