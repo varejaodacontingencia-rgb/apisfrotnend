@@ -335,6 +335,15 @@
 </div>
 
         <div id="perfisLista" class="mt-4"></div>
+<div class="mb-4">
+    <label class="form-label"><strong>Selecionar emissores para envio:</strong></label>
+    <div id="selecionar-emissores" class="form-check"></div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="checkAll" onclick="toggleTodosEmissores()">
+        <label class="form-check-label" for="checkAll">Selecionar Todos</label>
+    </div>
+</div>
+
     </div>
 
     <!-- Seção Perfis Alvo -->
@@ -494,6 +503,27 @@
                 </div>
             </div>
         `).join('');
+document.getElementById("selecionar-emissores").innerHTML = ''; // limpa anteriores
+perfisEmissores.forEach((perfil, index) => {
+    const checkbox = document.createElement('input');
+    checkbox.type = "checkbox";
+    checkbox.className = "form-check-input";
+    checkbox.id = `emissor_${index}`;
+    checkbox.value = index;
+    checkbox.checked = true; // por padrão, todos selecionados
+
+    const label = document.createElement('label');
+    label.className = "form-check-label ms-1";
+    label.htmlFor = checkbox.id;
+    label.textContent = perfil.label || perfil.uid;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = "form-check";
+    wrapper.appendChild(checkbox);
+    wrapper.appendChild(label);
+
+    document.getElementById("selecionar-emissores").appendChild(wrapper);
+});
     }
 
     // Função para remover perfil
@@ -631,18 +661,26 @@
     async function enviarRequisicoes() {
         // Validações
         if (perfisEmissores.length === 0) {
-            alert('Adicione pelo menos um perfil emissor!');
+            mostrarToast('Adicione pelo menos um perfil emissor!', 'error');
             return;
         }
 
         if (perfisAlvo.length === 0) {
-            alert('Adicione pelo menos um perfil alvo!');
+            mostrarToast('Adicione pelo menos um perfil alvo!', 'error');
             return;
         }
 
         const apiUrl = document.getElementById('apiUrl').value.trim();
         if (!apiUrl) {
-            alert('Informe a URL da API!');
+            mostrarToast('Informe a URL da API!', 'error');
+            return;
+        }
+
+        // Validar URL
+        try {
+            new URL(apiUrl);
+        } catch {
+            mostrarToast('URL da API inválida!', 'error');
             return;
         }
 
@@ -656,45 +694,61 @@
         document.getElementById('loading').classList.add('show');
         document.getElementById('btnEnviar').disabled = true;
         limparLogs();
+        
         adicionarLog(` Iniciando envio de ${perfisEmissores.length * perfisAlvo.length} solicitações...`);
         adicionarLog(` ${perfisEmissores.length} emissores → ${perfisAlvo.length} alvos`);
+        adicionarLog(` API: ${apiUrl}\n`);
 
         try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dados)
-            });
+            const resultado = await enviarComRetry(apiUrl, dados);
 
-            const resultado = await response.json();
+            adicionarLog(' Requisição enviada com sucesso!');
+            adicionarLog(' Processando resultados...\n');
 
-            if (response.ok) {
-                adicionarLog(' Requisição enviada com sucesso!');
-                adicionarLog(' Processando resultados...\n');
+            // Processar logs da resposta
+            if (resultado.logs && Array.isArray(resultado.logs)) {
+                resultado.logs.forEach(log => {
+                    adicionarLog(log);
+                });
+            }
 
-                // Processar logs da resposta
-                if (resultado.logs && Array.isArray(resultado.logs)) {
-                    resultado.logs.forEach(log => {
-                        adicionarLog(log);
-                    });
+            // Mostrar resumo
+            if (resultado.resumo) {
+                adicionarLog('\n RESUMO FINAL:');
+                adicionarLog(` Sucessos: ${resultado.resumo.sucessos || 0}`);
+                adicionarLog(` Erros: ${resultado.resumo.erros || 0}`);
+                adicionarLog(` Taxa de sucesso: ${resultado.resumo.taxa_sucesso || '0%'}`);
+                
+                const sucessos = resultado.resumo.sucessos || 0;
+                const total = perfisEmissores.length * perfisAlvo.length;
+                
+                if (sucessos > 0) {
+                    mostrarToast(`${sucessos}/${total} solicitações enviadas com sucesso!`, 'success');
                 }
+            }
 
-                // Mostrar resumo
-                if (resultado.resumo) {
-                    adicionarLog('\n RESUMO FINAL:');
-                    adicionarLog(` Sucessos: ${resultado.resumo.sucessos || 0}`);
-                    adicionarLog(` Erros: ${resultado.resumo.erros || 0}`);
-                    adicionarLog(` Taxa de sucesso: ${resultado.resumo.taxa_sucesso || '0%'}`);
-                }
+            // Mostrar logs de erro detalhados
+            if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
+                resultado.errosDetalhados.forEach((err, i) => {
+                    adicionarLog(`ERRO ${i + 1}:`);
+                    adicionarLog(`Perfil: ${err.perfil}`);
+                    adicionarLog(`Alvo: ${err.alvo}`);
+                    adicionarLog(`Erro: ${typeof err.erro === 'string' ? err.erro : JSON.stringify(err.erro)}`);
+                    adicionarLog('---');
+                });
+            }
 
-            } else {
-                adicionarLog(` Erro na API: ${resultado.error || 'Erro desconhecido'}`);
+            // Mostrar dados adicionais se houver
+            if (resultado.detalhes) {
+                adicionarLog('\n DETALHES ADICIONAIS:');
+                Object.entries(resultado.detalhes).forEach(([key, value]) => {
+                    adicionarLog(`${key}: ${value}`);
+                });
             }
 
         } catch (error) {
             adicionarLog(` Erro de conexão: ${error.message}`);
+            mostrarToast(`Erro: ${error.message}`, 'error');
             console.error('Erro:', error);
         } finally {
             // Esconder loading
@@ -899,11 +953,24 @@
         }
     }
 
+function toggleTodosEmissores() {
+    const checkboxes = document.querySelectorAll("#selecionar-emissores input[type='checkbox']");
+    const allChecked = document.getElementById("checkAll").checked;
+    checkboxes.forEach(cb => cb.checked = allChecked);
+}
+
     // Função principal melhorada para enviar requisições
     async function enviarRequisicoes() {
+const emissoresSelecionados = [];
+document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked").forEach(cb => {
+    const index = parseInt(cb.value);
+    if (!isNaN(index)) {
+        emissoresSelecionados.push(perfisEmissores[index]);
+    }
+});
         // Validações
-        if (perfisEmissores.length === 0) {
-            mostrarToast('Adicione pelo menos um perfil emissor!', 'error');
+        if (emissoresSelecionados.length === 0) {
+            mostrarToast('Selecione pelo menos um perfil emissor!', 'error');
             return;
         }
 
@@ -928,7 +995,7 @@
 
         // Preparar dados
         const dados = {
-            emissores: perfisEmissores,
+            emissores: emissoresSelecionados,
             alvos: perfisAlvo
         };
 
@@ -937,8 +1004,8 @@
         document.getElementById('btnEnviar').disabled = true;
         limparLogs();
         
-        adicionarLog(` Iniciando envio de ${perfisEmissores.length * perfisAlvo.length} solicitações...`);
-        adicionarLog(` ${perfisEmissores.length} emissores → ${perfisAlvo.length} alvos`);
+        adicionarLog(` Iniciando envio de ${emissoresSelecionados.length * perfisAlvo.length} solicitações...`);
+        adicionarLog(` ${emissoresSelecionados.length} emissores → ${perfisAlvo.length} alvos`);
         adicionarLog(` API: ${apiUrl}\n`);
 
         try {
@@ -962,7 +1029,7 @@
                 adicionarLog(` Taxa de sucesso: ${resultado.resumo.taxa_sucesso || '0%'}`);
                 
                 const sucessos = resultado.resumo.sucessos || 0;
-                const total = perfisEmissores.length * perfisAlvo.length;
+                const total = emissoresSelecionados.length * perfisAlvo.length;
                 
                 if (sucessos > 0) {
                     mostrarToast(`${sucessos}/${total} solicitações enviadas com sucesso!`, 'success');
