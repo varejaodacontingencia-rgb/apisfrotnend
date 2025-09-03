@@ -1108,9 +1108,27 @@ try {
 
   const resultado = await res.json();
 
-  if (resultado.logs && Array.isArray(resultado.logs)) {
-    resultado.logs.forEach(log => adicionarLog(typeof log === "string" ? log : JSON.stringify(log, null, 2)));
-  }
+// Exibir logs resumidos apenas dos emissores e erros
+if (resultado.resumo) {
+  adicionarLog("───────────────────────────────");
+  adicionarLog("📊 RESUMO FINAL 📊");
+  adicionarLog(`✅ Sucessos: ${resultado.resumo.sucessos}`);
+  adicionarLog(`❌ Erros: ${resultado.resumo.erros}`);
+  adicionarLog(`📈 Taxa de Sucesso: ${resultado.resumo.taxa_sucesso}`);
+  adicionarLog("───────────────────────────────");
+}
+
+// Mostrar erros detalhados
+if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
+  adicionarLog("❌ Erros Detalhados:");
+
+  resultado.errosDetalhados.forEach((erro, i) => {
+    adicionarLog(`\n[${i + 1}]`);
+    adicionarLog(`👤 Emissor: ${erro.perfil}`);
+    adicionarLog(`🎯 Alvo: ${erro.alvo}`);
+    adicionarLog(`⚠️ Erro: ${erro.erro}`);
+  });
+}
 
 adicionarLog(`✅ Bloco ${i + 1} enviado com sucesso`);
 } catch (error) {
