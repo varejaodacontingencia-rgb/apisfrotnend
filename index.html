@@ -700,67 +700,7 @@ perfisEmissores.forEach((perfil, index) => {
         adicionarLog(` API: ${apiUrl}\n`);
 
         try {
-            const resultado = await enviarComRetry(apiUrl, dados);
-
-            adicionarLog(' Requisição enviada com sucesso!');
-            adicionarLog(' Processando resultados...\n');
-
-            // Processar logs da resposta
-            // Mostrar logs detalhados
-// Mostrar resumo visual
-if (resultado.resumo) {
-  adicionarLog("───────────────────────────────");
-  adicionarLog("📊 RESUMO FINAL 📊");
-  adicionarLog(`✅ Sucessos: ${resultado.resumo.sucessos}`);
-  adicionarLog(`❌ Erros: ${resultado.resumo.erros}`);
-  adicionarLog(`📈 Taxa de Sucesso: ${resultado.resumo.taxa_sucesso}`);
-  adicionarLog("───────────────────────────────");
-}
-
-// Mostrar somente os UIDs dos perfis com erro
-if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
-  adicionarLog("❌ Perfis com erro:");
-
-  resultado.errosDetalhados.forEach((erro, i) => {
-    adicionarLog(`\n[${i + 1}] 🔴 UID do Emissor com erro: ${erro.perfil}`);
-  });
-}
-
-
-            // Mostrar resumo
-            if (resultado.resumo) {
-                adicionarLog('\n RESUMO FINAL:');
-                adicionarLog(` Sucessos: ${resultado.resumo.sucessos || 0}`);
-                adicionarLog(` Erros: ${resultado.resumo.erros || 0}`);
-                adicionarLog(` Taxa de sucesso: ${resultado.resumo.taxa_sucesso || '0%'}`);
-                
-                const sucessos = resultado.resumo.sucessos || 0;
-                const total = perfisEmissores.length * perfisAlvo.length;
-                
-                if (sucessos > 0) {
-                    mostrarToast(`${sucessos}/${total} solicitações enviadas com sucesso!`, 'success');
-                }
-            }
-
-            // Mostrar logs de erro detalhados
-            if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
-                resultado.errosDetalhados.forEach((err, i) => {
-                    adicionarLog(`ERRO ${i + 1}:`);
-                    adicionarLog(`Perfil: ${err.perfil}`);
-                    adicionarLog(`Alvo: ${err.alvo}`);
-                    adicionarLog(`Erro: ${typeof err.erro === 'string' ? err.erro : JSON.stringify(err.erro)}`);
-                    adicionarLog('---');
-                });
-            }
-
-            // Mostrar dados adicionais se houver
-            if (resultado.detalhes) {
-                adicionarLog('\n DETALHES ADICIONAIS:');
-                Object.entries(resultado.detalhes).forEach(([key, value]) => {
-                    adicionarLog(`${key}: ${value}`);
-                });
-            }
-
+            await enviarEmBlocos(emissoresSelecionados, perfisAlvo, apiUrl);
         } catch (error) {
             adicionarLog(` Erro de conexão: ${error.message}`);
             mostrarToast(`Erro: ${error.message}`, 'error');
@@ -1024,68 +964,7 @@ document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked"
         adicionarLog(` API: ${apiUrl}\n`);
 
         try {
-            const resultado = await enviarComRetry(apiUrl, dados);
-
-            adicionarLog(' Requisição enviada com sucesso!');
-            adicionarLog(' Processando resultados...\n');
-
-            // Processar logs da resposta
-            // Mostrar logs detalhados
-// Mostrar resumo visual
-if (resultado.resumo) {
-  adicionarLog("───────────────────────────────");
-  adicionarLog("📊 RESUMO FINAL 📊");
-  adicionarLog(`✅ Sucessos: ${resultado.resumo.sucessos}`);
-  adicionarLog(`❌ Erros: ${resultado.resumo.erros}`);
-  adicionarLog(`📈 Taxa de Sucesso: ${resultado.resumo.taxa_sucesso}`);
-  adicionarLog("───────────────────────────────");
-}
-
-// Mostrar somente os UIDs dos perfis com erro
-if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
-  adicionarLog("❌ Perfis com erro:");
-
-  resultado.errosDetalhados.forEach((erro, i) => {
-    adicionarLog(`\n[${i + 1}] 🔴 UID do Emissor com erro: ${erro.perfil}`);
-  });
-}
-
-
-
-
-            // Mostrar resumo
-            if (resultado.resumo) {
-                adicionarLog('\n RESUMO FINAL:');
-                adicionarLog(` Sucessos: ${resultado.resumo.sucessos || 0}`);
-                adicionarLog(` Erros: ${resultado.resumo.erros || 0}`);
-                adicionarLog(` Taxa de sucesso: ${resultado.resumo.taxa_sucesso || '0%'}`);
-                
-                const sucessos = resultado.resumo.sucessos || 0;
-                const total = emissoresSelecionados.length * perfisAlvo.length;
-                
-                if (sucessos > 0) {
-                    mostrarToast(`${sucessos}/${total} solicitações enviadas com sucesso!`, 'success');
-                }
-            }
-// Mostrar logs de erro detalhados
-if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
-    resultado.errosDetalhados.forEach((err, i) => {
-        adicionarLog(`ERRO ${i + 1}:`);
-        adicionarLog(`Perfil: ${err.perfil}`);
-        adicionarLog(`Alvo: ${err.alvo}`);
-        adicionarLog(`Erro: ${typeof err.erro === 'string' ? err.erro : JSON.stringify(err.erro)}`);
-        adicionarLog('---');
-    });
-}
-
-            // Mostrar dados adicionais se houver
-            if (resultado.detalhes) {
-                adicionarLog('\n DETALHES ADICIONAIS:');
-                Object.entries(resultado.detalhes).forEach(([key, value]) => {
-                    adicionarLog(`${key}: ${value}`);
-                });
-            }
-
+            await enviarEmBlocos(emissoresSelecionados, perfisAlvo, apiUrl);
         } catch (error) {
             adicionarLog(` Erro de conexão: ${error.message}`);
             mostrarToast(`Erro: ${error.message}`, 'error');
@@ -1253,5 +1132,80 @@ salvarPerfisNoLocalStorage();
 
 mostrarToast(` ${perfisImportados} perfis importados via texto!`, 'success');
 adicionarLog(` Importação rápida: ${perfisImportados} perfis adicionados via campo de texto.`);}
+
+// Delay entre os blocos (60 segundos)
+const DELAY_ENTRE_BLOCOS_MS = 60000;
+
+// Função delay com Promise
+const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Função para enviar os blocos sequencialmente
+async function enviarEmBlocos(emissores, alvos, apiUrl) {
+  const blocos = [];
+
+  // Dividir emissores em blocos de 25
+  for (let i = 0; i < emissores.length; i += 25) {
+    blocos.push(emissores.slice(i, i + 25));
+  }
+
+  adicionarLog(`🔄 Total de emissores: ${emissores.length}`);
+  adicionarLog(`📦 Total de blocos: ${blocos.length}`);
+  adicionarLog(`⏱️ Intervalo entre blocos: ${DELAY_ENTRE_BLOCOS_MS / 1000}s`);
+  adicionarLog("───────────────────────────────");
+
+  for (let i = 0; i < blocos.length; i++) {
+    const bloco = blocos[i];
+    adicionarLog(`🚀 Enviando bloco ${i + 1} de ${blocos.length}...`);
+    adicionarLog(`👤 ${bloco.length} emissores → 🎯 ${alvos.length} alvos`);
+
+    try {
+      const resposta = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ emissores: bloco, alvos })
+      });
+
+      const resultado = await resposta.json();
+
+      if (resultado.logs && Array.isArray(resultado.logs)) {
+        resultado.logs.forEach((log) => {
+          adicionarLog(typeof log === 'string' ? log : JSON.stringify(log));
+        });
+      }
+
+      // Mostrar resumo visual
+      if (resultado.resumo) {
+        adicionarLog("───────────────────────────────");
+        adicionarLog("📊 RESUMO FINAL 📊");
+        adicionarLog(`✅ Sucessos: ${resultado.resumo.sucessos}`);
+        adicionarLog(`❌ Erros: ${resultado.resumo.erros}`);
+        adicionarLog(`📈 Taxa de Sucesso: ${resultado.resumo.taxa_sucesso}`);
+        adicionarLog("───────────────────────────────");
+      }
+
+      // Mostrar erros detalhados
+      if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
+        if (resultado.errosDetalhados.length > 0) {
+          adicionarLog("❌ UIDs com erro:");
+          resultado.errosDetalhados.forEach((erro, i) => {
+            adicionarLog(`🚫 UID: ${erro.perfil}`);
+          });
+        }
+      }
+
+    } catch (err) {
+      adicionarLog(`❌ Erro ao enviar bloco ${i + 1}: ${err.message}`);
+    }
+
+    if (i < blocos.length - 1) {
+      adicionarLog(`⏳ Aguardando ${DELAY_ENTRE_BLOCOS_MS / 1000}s antes do próximo bloco...`);
+      await esperar(DELAY_ENTRE_BLOCOS_MS);
+    }
+  }
+
+  adicionarLog("✅ Todos os blocos foram processados.");
+}
 </script></body>
 </html>
