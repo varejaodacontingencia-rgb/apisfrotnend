@@ -251,14 +251,15 @@ body {
     .import-export-buttons {
         flex-direction: column;
     }
-}</style></head><body>
+}</style>
+</head>
+<body>
     <div class="container">
         <div class="header">
             <h1><i class="fab fa-facebook"></i> Automação Facebook</h1>
             <p class="text-muted">Plataforma para envio automático de solicitações de amizade</p>
         </div>
 
-<!-- Estatísticas -->
 <div class="stats">
     <div class="stat-item">
         <span class="stat-number" id="countEmissores">0</span>
@@ -267,14 +268,13 @@ body {
     <div class="stat-item">
         <span class="stat-number" id="countAlvos">0</span>
         <span class="stat-label">Perfis Alvo</span>
-    </div>
+        </div>
     <div class="stat-item">
         <span class="stat-number" id="totalRequests">0</span>
         <span class="stat-label">Total de Requests</span>
     </div>
 </div>
 
-<!-- Seção Perfis Emissores -->
 <div class="section-card">
     <h3 class="section-title">
         <i class="fas fa-user-plus"></i>
@@ -323,26 +323,26 @@ body {
             <i class="fas fa-trash"></i> Limpar Todos
         </button>
     </div>
-    <input type="file" id="fileInput" class="hidden-file-input" accept=".json" onchange="importarPerfis(event)"><div class="mt-4">
-    <label class="form-label"><strong>Importação Rápida</strong></label>
-    <textarea class="form-control" id="importacaoRapida" rows="8" placeholder="Cole aqui os dados dos perfis (ex: perfil 1\n1000123...\ncookie=...;)"></textarea>
-    <button class="btn btn-success mt-2" onclick="importarViaTexto()">
-        <i class="fas fa-file-import"></i> Processar Perfis do Texto
-    </button>
-</div>
+    <input type="file" id="fileInput" class="hidden-file-input" accept=".json" onchange="importarPerfis(event)">
+    <div class="mt-4">
+        <label class="form-label"><strong>Importação Rápida</strong></label>
+        <textarea class="form-control" id="importacaoRapida" rows="8" placeholder="Cole aqui os dados dos perfis (ex: perfil 1&#10;1000123...&#10;cookie=...;)"></textarea>
+        <button class="btn btn-success mt-2" onclick="importarViaTexto()">
+            <i class="fas fa-file-import"></i> Processar Perfis do Texto
+        </button>
+    </div>
 
-    <div id="perfisLista" class="mt-4"></div><div class="mb-4">
-    <label class="form-label"><strong>Selecionar emissores para envio:</strong></label>
-    <div id="selecionar-emissores" class="form-check"></div>
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="checkAll" onclick="toggleTodosEmissores()">
-        <label class="form-check-label" for="checkAll">Selecionar Todos</label>
+    <div id="perfisLista" class="mt-4"></div>
+    <div class="mb-4">
+        <label class="form-label"><strong>Selecionar emissores para envio:</strong></label>
+        <div id="selecionar-emissores" class="form-check"></div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="checkAll" onclick="toggleTodosEmissores()">
+            <label class="form-check-label" for="checkAll">Selecionar Todos</label>
+        </div>
     </div>
 </div>
 
-</div>
-
-<!-- Seção Perfis Alvo -->
 <div class="section-card">
     <h3 class="section-title">
         <i class="fas fa-bullseye"></i>
@@ -363,7 +363,6 @@ body {
     </button>
 </div>
 
-<!-- URL da API -->
 <div class="section-card">
     <h3 class="section-title">
         <i class="fas fa-server"></i>
@@ -379,7 +378,6 @@ body {
     </div>
 </div>
 
-<!-- Botões de Ação -->
 <div class="text-center mb-4">
     <button class="btn btn-success btn-lg me-3" onclick="enviarRequisicoes()" id="btnEnviar">
         <i class="fas fa-paper-plane"></i> Enviar Solicitações
@@ -389,20 +387,19 @@ body {
     </button>
 </div>
 
-<!-- Loading -->
 <div class="loading" id="loading">
     <div class="spinner"></div>
     <p>Enviando solicitações de amizade...</p>
 </div>
 
-<!-- Logs -->
 <div class="section-card">
     <h3 class="section-title">
         <i class="fas fa-terminal"></i>
         Logs de Execução
     </h3>
     <div class="logs-area" id="logs">Aguardando execução...</div>
-</div></div>
+</div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -470,29 +467,24 @@ body {
                 <div class="row">
                     <div class="col-md-2">
                         <strong>UID:</strong>
-
                         <code>${perfil.uid}</code>
                     </div>
                     <div class="col-md-6">
                         <strong>Cookie:</strong>
-
                         <code>${perfil.cookie.substring(0, 50)}...</code>
                     </div>
                     <div class="col-md-2">
                         <strong>fb_dtsg:</strong>
-
                         <code>${perfil.fb_dtsg.substring(0, 20)}...</code>
                     </div>
                     <div class="col-md-2">
                         <strong>LSD:</strong>
-
                         <code>${perfil.lsd}</code>
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-2">
                         <strong>Jazoest:</strong>
-
                         <code>${perfil.jazoest}</code>
                     </div>
                 </div>
@@ -622,7 +614,6 @@ perfisEmissores.forEach((perfil, index) => {
                     if (confirm(`Importar ${dados.perfis.length} perfis? (Isso substituirá os perfis atuais)`)) {
                         perfisEmissores = dados.perfis.slice(0, 50); // Limitar a 50
                         atualizarListaPerfis();
-                        atualizarContadores();
                         adicionarLog(` ${perfisEmissores.length} perfis importados com sucesso!`);
                         salvarPerfisNoLocalStorage();
                     }
@@ -853,6 +844,78 @@ function toggleTodosEmissores() {
     checkboxes.forEach(cb => cb.checked = allChecked);
 }
 
+// CONFIGURAÇÕES
+const TAMANHO_BLOCO = 1; // Cada bloco envia 1 perfil para evitar timeout
+const INTERVALO_ENTRE_BLOCOS_MS = 2500; // 2.5 segundos entre cada bloco
+const API_URL = "https://apisfriends.vercel.app/api/send-requests"; // URL da sua API backend (Node.js na Vercel)
+
+function dividirEmBlocos(array, tamanho) {
+    const blocos = [];
+    for (let i = 0; i < array.length; i += tamanho) {
+        blocos.push(array.slice(i, i + tamanho));
+    }
+    return blocos;
+}
+
+async function enviarBloco(bloco, alvos, blocoIndex, totalBlocos) {
+    console.log(`🚀 Enviando bloco ${blocoIndex + 1} de ${totalBlocos}...`);
+    console.log(`👤 ${bloco.length} emissores → 🎯 ${alvos.length} alvos`);
+
+    try {
+        const resposta = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ emissores: bloco, alvos })
+        });
+
+        if (!resposta.ok) throw new Error("Erro na resposta da API");
+
+        const dados = await resposta.json();
+
+        // Logs resumidos por emissor
+        if (dados?.logs) {
+            dados.logs.forEach(log => {
+                console.log(`🟢 ${log.emissor} → ${log.alvo}: ${log.status}`);
+            });
+        }
+
+        // Erros por perfil individual
+        if (dados?.errosDetalhados?.length > 0) {
+            dados.errosDetalhados.forEach(erro => {
+                console.warn(`🔴 ${erro.perfil} → ${erro.alvo} ERRO: ${erro.erro}`);
+            });
+        }
+
+    } catch (e) {
+        console.error(`❌ Erro ao enviar bloco ${blocoIndex + 1}:`, e.message);
+    }
+}
+
+async function enviarBlocosDePerfis(emissores, alvos) {
+    console.clear();
+    console.log("Logs limpos...");
+    console.log(`🔄 Total de emissores: ${emissores.length}`);
+    console.log(`🎯 Total de alvos: ${alvos.length}`);
+
+    const blocos = dividirEmBlocos(emissores, TAMANHO_BLOCO);
+    console.log(`📦 Total de blocos: ${blocos.length}`);
+    console.log(`⏱️ Intervalo entre blocos: ${INTERVALO_ENTRE_BLOCOS_MS / 1000}s`);
+    console.log("───────────────────────────────");
+
+    for (let i = 0; i < blocos.length; i++) {
+        await enviarBloco(blocos[i], alvos, i, blocos.length);
+        if (i < blocos.length - 1) {
+            console.log(`⏳ Aguardando ${INTERVALO_ENTRE_BLOCOS_MS / 1000}s antes do próximo bloco...`);
+            await new Promise(res => setTimeout(res, INTERVALO_ENTRE_BLOCOS_MS));
+        }
+    }
+
+    console.log("✅ Todos os blocos foram processados.");
+}
+
+
     // Função principal melhorada para enviar requisições
     async function enviarRequisicoes() {
 const emissoresSelecionados = [];
@@ -887,258 +950,90 @@ document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked"
             return;
         }
 
-        // Preparar dados
-        const dados = {
-            emissores: emissoresSelecionados,
-            alvos: perfisAlvo
-        };
-
-        // Mostrar loading
-        document.getElementById('loading').classList.add('show');
-        document.getElementById('btnEnviar').disabled = true;
-        limparLogs();
-        
-        adicionarLog(` Iniciando envio de ${emissoresSelecionados.length * perfisAlvo.length} solicitações...`);
-        adicionarLog(` ${emissoresSelecionados.length} emissores → ${perfisAlvo.length} alvos`);
-        adicionarLog(` API: ${apiUrl}\n`);
 
         try {
-            await enviarBlocosDePerfis(emissoresSelecionados, perfisAlvo, apiUrl);
+            // Chamar a função
+            await enviarBlocosDePerfis(emissoresSelecionados, perfisAlvo);
         } catch (error) {
-            adicionarLog(` Erro de conexão: ${error.message}`);
-            mostrarToast(`Erro: ${error.message}`, 'error');
-            console.error('Erro:', error);
+            adicionarLog(`❌ Erro geral no envio: ${error.message}`);
+            mostrarToast('Erro ao enviar solicitações!', 'error');
         } finally {
-            // Esconder loading
+            // Esconder loading e habilitar botão
             document.getElementById('loading').classList.remove('show');
             document.getElementById('btnEnviar').disabled = false;
-            adicionarLog('\n Processo finalizado.');
         }
     }
 
-    // Função para validar URL da API
-    function validarApiUrl() {
-        const apiUrl = document.getElementById('apiUrl').value.trim();
-        const input = document.getElementById('apiUrl');
-        
-        try {
-            const url = new URL(apiUrl);
-            if (url.protocol !== 'https:') {
-                input.classList.add('is-invalid');
-                return false;
-            }
-            input.classList.remove('is-invalid');
-            input.classList.add('is-valid');
-            return true;
-        } catch {
-            input.classList.add('is-invalid');
-            return false;
-        }
-    }
-
-    // Event listener para validação da URL em tempo real
-    document.addEventListener('DOMContentLoaded', function() {
-        const perfisSalvos = localStorage.getItem('perfisEmissores');
-        if (perfisSalvos) {
-            perfisEmissores = JSON.parse(perfisSalvos);
-            atualizarListaPerfis();
-            atualizarContadores();
-            adicionarLog(` ${perfisEmissores.length} perfis carregados do armazenamento local.`);
-        }
+    // Carregar dados salvos no localStorage
+    function carregarDados() {
+        const emissoresSalvos = localStorage.getItem('perfisEmissores');
         const alvosSalvos = localStorage.getItem('perfisAlvo');
+        if (emissoresSalvos) {
+            perfisEmissores = JSON.parse(emissoresSalvos);
+            atualizarListaPerfis();
+        }
         if (alvosSalvos) {
             perfisAlvo = JSON.parse(alvosSalvos);
             document.getElementById('alvos').value = perfisAlvo.join('\n');
-            atualizarContadores();
-            adicionarLog(` ${perfisAlvo.length} alvos carregados do armazenamento local.`);
         }
-        setupEnterKeyListeners();
         atualizarContadores();
-        adicionarLog(' Sistema iniciado! Pronto para uso.');
+    }
 
-        // Validação da URL da API
-        document.getElementById('apiUrl').addEventListener('input', validarApiUrl);
+    // Chamar a função de carregar dados quando a página carrega
+    window.addEventListener('load', carregarDados);
+    
+    function importarViaTexto() {
+        const texto = document.getElementById('importacaoRapida').value.trim();
+        const linhas = texto.split('\n');
         
-        // Adicionar placeholder melhorado para alvos
-        const alvosTextarea = document.getElementById('alvos');
-        alvosTextarea.addEventListener('paste', function(e) {
-            setTimeout(() => {
-                contarAlvos();
-                mostrarToast('UIDs colados! Verificando formato...', 'info');
-            }, 100);
-        });
-    });
-
-    // Função para testar conexão com a API
-    async function testarConexao() {
-        const apiUrl = document.getElementById('apiUrl').value.trim();
+        const novosPerfis = [];
+        let perfilAtual = {};
         
-        if (!validarApiUrl()) {
-            mostrarToast('URL inválida!', 'error');
+        for (const linha of linhas) {
+            const trimmedLine = linha.trim();
+            if (trimmedLine.startsWith('1')) {
+                // Nova linha com UID
+                perfilAtual = { uid: trimmedLine };
+                novosPerfis.push(perfilAtual);
+            } else if (trimmedLine.startsWith('cookie=')) {
+                if (perfilAtual.uid) {
+                    perfilAtual.cookie = trimmedLine;
+                }
+            } else if (trimmedLine.startsWith('fb_dtsg=')) {
+                if (perfilAtual.uid) {
+                    perfilAtual.fb_dtsg = trimmedLine;
+                }
+            } else if (trimmedLine.startsWith('lsd=')) {
+                if (perfilAtual.uid) {
+                    perfilAtual.lsd = trimmedLine;
+                }
+            } else if (trimmedLine.startsWith('jazoest=')) {
+                if (perfilAtual.uid) {
+                    perfilAtual.jazoest = trimmedLine;
+                }
+            }
+        }
+        
+        const perfisValidos = novosPerfis.filter(p => p.uid && p.cookie && p.fb_dtsg && p.lsd && p.jazoest);
+        
+        if (perfisValidos.length === 0) {
+            mostrarToast('Nenhum perfil válido encontrado no texto.', 'error');
             return;
         }
-
-        try {
-            adicionarLog(' Testando conexão com a API...');
+        
+        if (confirm(`Foram encontrados ${perfisValidos.length} perfis válidos. Deseja adicioná-los?`)) {
+            const perfisUnicos = perfisValidos.filter(novoPerfil => !perfisEmissores.some(p => p.uid === novoPerfil.uid));
             
-            const response = await fetch(apiUrl.replace('/api/send-requests', '/api/health'), {
-                method: 'GET'
-            });
-
-            if (response.ok) {
-                adicionarLog(' Conexão com API estabelecida com sucesso!');
-                mostrarToast('API conectada!', 'success');
-            } else {
-                adicionarLog(' API respondeu mas pode estar com problemas');
-                mostrarToast('API respondeu mas pode estar com problemas', 'warning');
-            }
-        } catch (error) {
-            adicionarLog(` Falha na conexão: ${error.message}`);
-            mostrarToast('Falha na conexão com a API', 'error');
+            perfisEmissores = [...perfisEmissores, ...perfisUnicos].slice(0, 50);
+            
+            atualizarListaPerfis();
+            atualizarContadores();
+            salvarPerfisNoLocalStorage();
+            adicionarLog(` ${perfisUnicos.length} novos perfis adicionados a partir do texto.`);
+            document.getElementById('importacaoRapida').value = '';
         }
     }
-
-    // Função para gerar relatório
-    function gerarRelatorio() {
-        if (perfisEmissores.length === 0 && perfisAlvo.length === 0) {
-            mostrarToast('Nenhum dado para gerar relatório!', 'error');
-            return;
-        }
-
-        const relatorio = {
-            timestamp: new Date().toISOString(),
-            perfis_emissores: perfisEmissores.length,
-            perfis_alvo: perfisAlvo.length,
-            total_requests_possiveis: perfisEmissores.length * perfisAlvo.length,
-            detalhes: {
-                emissores: perfisEmissores.map(p => ({ uid: p.uid })),
-                alvos: perfisAlvo
-            }
-        };
-
-        const blob = new Blob([JSON.stringify(relatorio, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `relatorio_facebook_${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
-        
-        URL.revokeObjectURL(url);
-        mostrarToast('Relatório baixado!', 'success');
-    }
-function importarViaTexto() {
-    const texto = document.getElementById('importacaoRapida').value.trim();
-    if (!texto) {
-        mostrarToast('Campo vazio!', 'error');
-        return;
-    }const blocos = texto.split(/perfil\s+\d+/i).map(b => b.trim()).filter(b => b);
-
-let perfisImportados = 0;
-
-blocos.forEach((bloco, index) => {
-    const linhas = bloco.split('\n').map(l => l.trim()).filter(l => l);
-
-    if (linhas.length < 2) return;
-
-    const uidMatch = linhas.find(l => /^\d{10,}$/.test(l));
-    const cookieMatch = linhas.find(l => l.includes("c_user="));
-
-    if (!uidMatch || !cookieMatch) return;
-
-    const uid = uidMatch;
-    const cookie = cookieMatch;
-
-    if (perfisEmissores.some(p => p.uid === uid)) return; // já existe
-
-    // Extrair tokens (opcional — o backend já busca se estiverem vazios)
-    const perfil = {
-        uid,
-        cookie,
-        fb_dtsg: "",
-        lsd: "",
-        jazoest: "",
-        label: `Perfil ${index + 1}`
-    };
-
-    perfisEmissores.push(perfil);
-    perfisImportados++;
-});
-
-atualizarListaPerfis();
-atualizarContadores();
-salvarPerfisNoLocalStorage();
-
-mostrarToast(` ${perfisImportados} perfis importados via texto!`, 'success');
-adicionarLog(` Importação rápida: ${perfisImportados} perfis adicionados via campo de texto.`);}
-
-// Delay entre os blocos (60 segundos)
-const DELAY_ENTRE_BLOCOS_MS = 60000;
-
-// Função delay com Promise
-const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-// Função para enviar os blocos sequencialmente
-async function enviarBlocosDePerfis(emissores, alvos, apiUrl) {
-  const BLOCOS = [];
-  const TAMANHO_BLOCO = 5;
-  const INTERVALO_MS = 10000; // 10 segundos entre blocos  // Dividir emissores em blocos de 5
-  for (let i = 0; i < emissores.length; i += TAMANHO_BLOCO) {
-    BLOCOS.push(emissores.slice(i, i + TAMANHO_BLOCO));
-  }  adicionarLog(" Total de emissores: " + emissores.length);
-  adicionarLog(" Total de blocos: " + BLOCOS.length);
-  adicionarLog(" Intervalo entre blocos: 10s");
-  adicionarLog("───────────────────────────────");  for (let i = 0; i < BLOCOS.length; i++) {
-    const bloco = BLOCOS[i];adicionarLog(` Enviando bloco ${i + 1} de ${BLOCOS.length}...`);
-adicionarLog(` ${bloco.length} emissores →  ${alvos.length} alvos`);
-
-try {
-  const res = await fetch(apiUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      emissores: bloco,
-      alvos: alvos
-    })
-  });
-
-  if (!res.ok) {
-    throw new Error(`Erro na resposta da API: ${res.status}`);
-  }
-
-  const resultado = await res.json();
-
-// Exibir logs resumidos apenas dos emissores e erros
-if (resultado.resumo) {
-  adicionarLog("───────────────────────────────");
-  adicionarLog("📊 RESUMO FINAL 📊");
-  adicionarLog(`✅ Sucessos: ${resultado.resumo.sucessos}`);
-  adicionarLog(`❌ Erros: ${resultado.resumo.erros}`);
-  adicionarLog(`📈 Taxa de Sucesso: ${resultado.resumo.taxa_sucesso}`);
-  adicionarLog("───────────────────────────────");
-}
-
-// Mostrar erros detalhados
-if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
-  adicionarLog("❌ Erros Detalhados:");
-
-  resultado.errosDetalhados.forEach((erro, i) => {
-    adicionarLog(`\n[${i + 1}]`);
-    adicionarLog(`👤 Emissor: ${erro.perfil}`);
-    adicionarLog(`🎯 Alvo: ${erro.alvo}`);
-    adicionarLog(`⚠️ Erro: ${erro.erro}`);
-  });
-}
-
-adicionarLog(`✅ Bloco ${i + 1} enviado com sucesso`);
-} catch (error) {
-  adicionarLog(`❌ Erro ao enviar bloco ${i + 1}: ${error.message || error}`);
-}
-
-if (i < BLOCOS.length - 1) {
-  adicionarLog(" Aguardando 10s antes do próximo bloco...");
-  await new Promise(resolve => setTimeout(resolve, INTERVALO_MS));
-}  }  adicionarLog(" Todos os blocos foram processados.\n\n Processo finalizado.");
-}
-</script></body>
+    window.importarViaTexto = importarViaTexto;
+</script>
+</body>
 </html>
