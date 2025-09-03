@@ -652,62 +652,6 @@ perfisEmissores.forEach((perfil, index) => {
         document.getElementById('logs').textContent = 'Logs limpos...\n';
     }
 
-    // Função principal para enviar requisições
-    async function enviarRequisicoes() {
-        // Validações
-        if (perfisEmissores.length === 0) {
-            mostrarToast('Adicione pelo menos um perfil emissor!', 'error');
-            return;
-        }
-
-        if (perfisAlvo.length === 0) {
-            mostrarToast('Adicione pelo menos um perfil alvo!', 'error');
-            return;
-        }
-
-        const apiUrl = document.getElementById('apiUrl').value.trim();
-        if (!apiUrl) {
-            mostrarToast('Informe a URL da API!', 'error');
-            return;
-        }
-
-        // Validar URL
-        try {
-            new URL(apiUrl);
-        } catch {
-            mostrarToast('URL da API inválida!', 'error');
-            return;
-        }
-
-        // Preparar dados
-        const dados = {
-            emissores: perfisEmissores,
-            alvos: perfisAlvo
-        };
-
-        // Mostrar loading
-        document.getElementById('loading').classList.add('show');
-        document.getElementById('btnEnviar').disabled = true;
-        limparLogs();
-        
-        adicionarLog(` Iniciando envio de ${perfisEmissores.length * perfisAlvo.length} solicitações...`);
-        adicionarLog(` ${perfisEmissores.length} emissores → ${perfisAlvo.length} alvos`);
-        adicionarLog(` API: ${apiUrl}\n`);
-
-        try {
-            await enviarBlocosDePerfis(emissoresSelecionados, perfisAlvo, apiUrl);
-        } catch (error) {
-            adicionarLog(` Erro de conexão: ${error.message}`);
-            mostrarToast(`Erro: ${error.message}`, 'error');
-            console.error('Erro:', error);
-        } finally {
-            // Esconder loading
-            document.getElementById('loading').classList.remove('show');
-            document.getElementById('btnEnviar').disabled = false;
-            adicionarLog('\n Processo finalizado.');
-        }
-    }
-
     // Event listeners
     document.addEventListener('DOMContentLoaded', function() {
         // Permitir adicionar perfil com Enter
@@ -1126,7 +1070,16 @@ atualizarContadores();
 salvarPerfisNoLocalStorage();
 
 mostrarToast(` ${perfisImportados} perfis importados via texto!`, 'success');
-adicionarLog(` Importação rápida: ${perfisImportados} perfis adicionados via campo de texto.`);}async function enviarBlocosDePerfis(emissores, alvos, endpoint) {
+adicionarLog(` Importação rápida: ${perfisImportados} perfis adicionados via campo de texto.`);}
+
+// Delay entre os blocos (60 segundos)
+const DELAY_ENTRE_BLOCOS_MS = 60000;
+
+// Função delay com Promise
+const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Função para enviar os blocos sequencialmente
+async function enviarBlocosDePerfis(emissores, alvos, apiUrl) {
   const BLOCOS = [];
   const TAMANHO_BLOCO = 5;
   const INTERVALO_MS = 10000; // 10 segundos entre blocos  // Dividir emissores em blocos de 5
@@ -1140,11 +1093,9 @@ adicionarLog(` Importação rápida: ${perfisImportados} perfis adicionados via 
 adicionarLog(` ${bloco.length} emissores →  ${alvos.length} alvos`);
 
 try {
-  const res = await fetch(endpoint, {
+  const res = await fetch(apiUrl, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       emissores: bloco,
       alvos: alvos
@@ -1152,7 +1103,7 @@ try {
   });
 
   if (!res.ok) {
-    throw new Error(`Erro HTTP: ${res.status}`);
+    throw new Error(`Erro na resposta da API: ${res.status}`);
   }
 
   const resultado = await res.json();
@@ -1161,8 +1112,9 @@ try {
     resultado.logs.forEach(log => adicionarLog(typeof log === "string" ? log : JSON.stringify(log, null, 2)));
   }
 
-} catch (err) {
-  adicionarLog(` Erro ao enviar bloco ${i + 1}: ${err.message}`);
+adicionarLog(`✅ Bloco ${i + 1} enviado com sucesso`);
+} catch (error) {
+  adicionarLog(`❌ Erro ao enviar bloco ${i + 1}: ${error.message || error}`);
 }
 
 if (i < BLOCOS.length - 1) {
@@ -1171,4 +1123,4 @@ if (i < BLOCOS.length - 1) {
 }  }  adicionarLog(" Todos os blocos foram processados.\n\n Processo finalizado.");
 }
 </script></body>
-</html>Sorry about that, something didn't go as planned. Please try again, and if you're still seeing this message, go ahead and restart the app.Sorry about that, something didn't go as planned. Please try again, and if you're still seeing this message, go ahead and restart the app.
+</html>
