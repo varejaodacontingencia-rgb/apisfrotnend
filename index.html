@@ -954,7 +954,7 @@ perfisEmissores.forEach((perfil, index) => {
     }
 // ====== Lotes (helpers) ======
 const TAMANHO_LOTE = 15;                 // até 15 emissores por requisição
-const ATRASO_ENTRE_LOTES_MS = 1500;      // 1.5s entre lotes (evita estouro/pressão no backend)
+const ATRASO_ENTRE_LOTES_MS = 2500;      // 1.5s entre lotes (evita estouro/pressão no backend)
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
