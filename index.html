@@ -980,19 +980,31 @@ async function enviarEmLotesPorAlvo(apiUrl, emissoresSelecionados, alvos) {
       const payload = { emissores: lote, alvos: [alvo] };
 
       try {
-        const r = await enviarComRetry(apiUrl, payload);
-        const s = (r?.resumo?.sucessos ?? 0);
-        const e = (r?.resumo?.erros ?? 0);
+  const r = await enviarComRetry(apiUrl, payload);
 
-        totalSucesso += s;
-        totalErro += e;
+  const s = (r?.resumo?.sucessos ?? 0);
+  const e = (r?.resumo?.erros ?? 0);
 
-        adicionarLog(`OK lote ${i + 1}/${lotes.length} — sucessos: ${s}, erros: ${e}`);
-      } catch (err) {
-        // se der erro, conta todo o lote como falha (fallback) e segue
-        totalErro += lote.length;
-        adicionarLog(`ERRO no lote ${i + 1}/${lotes.length}: ${err.message}`);
-      }
+  totalSucesso += s;
+  totalErro += e;
+
+  // ✅ Mostra apenas número total de sucessos
+  if (s > 0) {
+    adicionarLog(`✅ ${s} solicitações bem-sucedidas neste lote`);
+  }
+
+  // ❌ Mostra cada erro individual com UID
+  if (r && r.errosDetalhados) {
+    r.errosDetalhados.forEach(err => {
+      adicionarLog(`❌ Emissor ${err.perfil} → alvo ${err.alvo} | Erro: ${typeof err.erro === 'string' ? err.erro : JSON.stringify(err.erro)}`);
+    });
+  }
+
+  adicionarLog(`Resumo lote ${i + 1}/${lotes.length} — sucessos: ${s}, erros: ${e}`);
+} catch (err) {
+  totalErro += lote.length;
+  adicionarLog(`❌ ERRO no lote ${i + 1}/${lotes.length}: ${err.message}`);
+}
 
       // respiro entre lotes (mantém dentro do timeout e dá folga pro servidor)
       await sleep(ATRASO_ENTRE_LOTES_MS);
