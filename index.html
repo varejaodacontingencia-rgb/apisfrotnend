@@ -952,7 +952,56 @@ perfisEmissores.forEach((perfil, index) => {
             }
         }
     }
+// ====== Lotes (helpers) ======
+const TAMANHO_LOTE = 15;                 // até 15 emissores por requisição
+const ATRASO_ENTRE_LOTES_MS = 1500;      // 1.5s entre lotes (evita estouro/pressão no backend)
 
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+function chunkArray(arr, size) {
+  const out = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  return out;
+}
+
+// Envia alvo por alvo; para cada alvo, divide emissores em lotes de 15
+async function enviarEmLotesPorAlvo(apiUrl, emissoresSelecionados, alvos) {
+  let totalTarefas = emissoresSelecionados.length * alvos.length;
+  let totalSucesso = 0, totalErro = 0;
+
+  for (const alvo of alvos) {
+    adicionarLog(`\n=== Alvo ${alvo} ===`);
+    const lotes = chunkArray(emissoresSelecionados, TAMANHO_LOTE);
+
+    for (let i = 0; i < lotes.length; i++) {
+      const lote = lotes[i];
+      adicionarLog(`→ Lote ${i + 1}/${lotes.length} (${lote.length} emissores) → alvo ${alvo}`);
+
+      const payload = { emissores: lote, alvos: [alvo] };
+
+      try {
+        const r = await enviarComRetry(apiUrl, payload);
+        const s = (r?.resumo?.sucessos ?? 0);
+        const e = (r?.resumo?.erros ?? 0);
+
+        totalSucesso += s;
+        totalErro += e;
+
+        adicionarLog(`OK lote ${i + 1}/${lotes.length} — sucessos: ${s}, erros: ${e}`);
+      } catch (err) {
+        // se der erro, conta todo o lote como falha (fallback) e segue
+        totalErro += lote.length;
+        adicionarLog(`ERRO no lote ${i + 1}/${lotes.length}: ${err.message}`);
+      }
+
+      // respiro entre lotes (mantém dentro do timeout e dá folga pro servidor)
+      await sleep(ATRASO_ENTRE_LOTES_MS);
+    }
+  }
+
+  adicionarLog(`\nFIM — Total tarefas: ${totalTarefas} | Sucessos: ${totalSucesso} | Erros: ${totalErro}`);
+  return { totalTarefas, totalSucesso, totalErro };
+}
 function toggleTodosEmissores() {
     const checkboxes = document.querySelectorAll("#selecionar-emissores input[type='checkbox']");
     const allChecked = document.getElementById("checkAll").checked;
@@ -961,110 +1010,53 @@ function toggleTodosEmissores() {
 
     // Função principal melhorada para enviar requisições
     async function enviarRequisicoes() {
-const emissoresSelecionados = [];
-document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked").forEach(cb => {
+  // Coleta emissores selecionados nos checkboxes
+  const emissoresSelecionados = [];
+  document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked").forEach(cb => {
     const index = parseInt(cb.value);
-    if (!isNaN(index)) {
-        emissoresSelecionados.push(perfisEmissores[index]);
-    }
-});
-        // Validações
-        if (emissoresSelecionados.length === 0) {
-            mostrarToast('Selecione pelo menos um perfil emissor!', 'error');
-            return;
-        }
+    if (!isNaN(index)) emissoresSelecionados.push(perfisEmissores[index]);
+  });
 
-        if (perfisAlvo.length === 0) {
-            mostrarToast('Adicione pelo menos um perfil alvo!', 'error');
-            return;
-        }
+  // Validações básicas
+  if (emissoresSelecionados.length === 0) {
+    mostrarToast('Selecione pelo menos um perfil emissor!', 'error');
+    return;
+  }
+  if (perfisAlvo.length === 0) {
+    mostrarToast('Adicione pelo menos um perfil alvo!', 'error');
+    return;
+  }
 
-        const apiUrl = document.getElementById('apiUrl').value.trim();
-        if (!apiUrl) {
-            mostrarToast('Informe a URL da API!', 'error');
-            return;
-        }
+  const apiUrl = document.getElementById('apiUrl').value.trim();
+  try { new URL(apiUrl); } catch { mostrarToast('URL da API inválida!', 'error'); return; }
 
-        // Validar URL
-        try {
-            new URL(apiUrl);
-        } catch {
-            mostrarToast('URL da API inválida!', 'error');
-            return;
-        }
+  // UI: trava botão + loading
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('btnEnviar').disabled = true;
+  limparLogs();
 
-        // Preparar dados
-        const dados = {
-            emissores: emissoresSelecionados,
-            alvos: perfisAlvo
-        };
+  // Cabeçalho dos logs
+  adicionarLog(` Iniciando em lotes de ${TAMANHO_LOTE} emissores.`);
+  adicionarLog(` Emissores selecionados: ${emissoresSelecionados.length}`);
+  adicionarLog(` Alvos: ${perfisAlvo.length}`);
+  adicionarLog(` API: ${apiUrl}\n`);
 
-        // Mostrar loading
-        document.getElementById('loading').classList.add('show');
-        document.getElementById('btnEnviar').disabled = true;
-        limparLogs();
-        
-        adicionarLog(` Iniciando envio de ${emissoresSelecionados.length * perfisAlvo.length} solicitações...`);
-        adicionarLog(` ${emissoresSelecionados.length} emissores → ${perfisAlvo.length} alvos`);
-        adicionarLog(` API: ${apiUrl}\n`);
+  try {
+    // === AQUI: envia alvo por alvo, em lotes de 15 ===
+    const resumo = await enviarEmLotesPorAlvo(apiUrl, emissoresSelecionados, perfisAlvo);
 
-        try {
-            const resultado = await enviarComRetry(apiUrl, dados);
-
-            adicionarLog(' Requisição enviada com sucesso!');
-            adicionarLog(' Processando resultados...\n');
-
-            // Processar logs da resposta
-            if (resultado.logs && Array.isArray(resultado.logs)) {
-                resultado.logs.forEach(log => {
-                    adicionarLog(log);
-                });
-            }
-
-            // Mostrar resumo
-            if (resultado.resumo) {
-                adicionarLog('\n RESUMO FINAL:');
-                adicionarLog(` Sucessos: ${resultado.resumo.sucessos || 0}`);
-                adicionarLog(` Erros: ${resultado.resumo.erros || 0}`);
-                adicionarLog(` Taxa de sucesso: ${resultado.resumo.taxa_sucesso || '0%'}`);
-                
-                const sucessos = resultado.resumo.sucessos || 0;
-                const total = emissoresSelecionados.length * perfisAlvo.length;
-                
-                if (sucessos > 0) {
-                    mostrarToast(`${sucessos}/${total} solicitações enviadas com sucesso!`, 'success');
-                }
-            }
-// Mostrar logs de erro detalhados
-if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
-    resultado.errosDetalhados.forEach((err, i) => {
-        adicionarLog(`ERRO ${i + 1}:`);
-        adicionarLog(`Perfil: ${err.perfil}`);
-        adicionarLog(`Alvo: ${err.alvo}`);
-        adicionarLog(`Erro: ${typeof err.erro === 'string' ? err.erro : JSON.stringify(err.erro)}`);
-        adicionarLog('---');
-    });
+    // Resumo final
+    mostrarToast(`Concluído — Sucessos: ${resumo.totalSucesso} / ${resumo.totalTarefas}`, 'success');
+  } catch (error) {
+    adicionarLog(` Erro de conexão: ${error.message}`);
+    mostrarToast(`Erro: ${error.message}`, 'error');
+    console.error('Erro:', error);
+  } finally {
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('btnEnviar').disabled = false;
+    adicionarLog('\n Processo finalizado.');
+  }
 }
-
-            // Mostrar dados adicionais se houver
-            if (resultado.detalhes) {
-                adicionarLog('\n DETALHES ADICIONAIS:');
-                Object.entries(resultado.detalhes).forEach(([key, value]) => {
-                    adicionarLog(`${key}: ${value}`);
-                });
-            }
-
-        } catch (error) {
-            adicionarLog(` Erro de conexão: ${error.message}`);
-            mostrarToast(`Erro: ${error.message}`, 'error');
-            console.error('Erro:', error);
-        } finally {
-            // Esconder loading
-            document.getElementById('loading').classList.remove('show');
-            document.getElementById('btnEnviar').disabled = false;
-            adicionarLog('\n Processo finalizado.');
-        }
-    }
 
     // Função para validar URL da API
     function validarApiUrl() {
