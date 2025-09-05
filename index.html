@@ -1033,7 +1033,10 @@ resultado.logs.forEach(log => {
 perfisBloqueados.add(emissor);
 const index = perfisEmissores.findIndex(p => p.uid === emissor);
 if (index !== -1) {
-    document.querySelector(`#emissor_${index}`)?.checked = false;
+    const checkbox = document.querySelector(`#emissor_${index}`);
+    if (checkbox) {
+        checkbox.checked = false;
+    }
 }
 } else {
     adicionarLog(` Perfil ${emissor} enviou para ${alvo} com sucesso.`);
