@@ -294,17 +294,17 @@
                 <input type="text" class="form-control" id="cookie" placeholder="datr=...; sb=...; ps_l=...; c_user=...">
             </div>
             <div class="col-md-2">
-                <label class="form-label">fb_dtsg</label>
+                <label class="form-label">fb_dtsg <small class="text-muted">(opcional - será obtido automaticamente)</small></label>
                 <input type="text" class="form-control" id="fb_dtsg" placeholder="NAcOe...">
             </div>
             <div class="col-md-2">
-                <label class="form-label">LSD</label>
+                <label class="form-label">LSD <small class="text-muted">(opcional - será obtido automaticamente)</small></label>
                 <input type="text" class="form-control" id="lsd" placeholder="AVr...">
             </div>
         </div>
         <div class="row mt-3">
             <div class="col-md-2">
-                <label class="form-label">Jazoest</label>
+                <label class="form-label">Jazoest <small class="text-muted">(opcional - será calculado automaticamente)</small></label>
                 <input type="text" class="form-control" id="jazoest" placeholder="2957">
             </div>
             <div class="col-md-10 d-flex align-items-end">
@@ -328,7 +328,19 @@
         <input type="file" id="fileInput" class="hidden-file-input" accept=".json" onchange="importarPerfis(event)">
 <div class="mt-4">
     <label class="form-label"><strong>Importação Rápida</strong></label>
-    <textarea class="form-control" id="importacaoRapida" rows="8" placeholder="Cole aqui os dados dos perfis (ex: perfil 1\n1000123...\ncookie=...;)"></textarea>
+    <textarea class="form-control" id="importacaoRapida" rows="8" 
+    placeholder="Formatos aceitos:
+1) UID na primeira linha, cookie na segunda
+2) Separar perfis com linha vazia ou '---'
+3) Tokens opcionais (fb_dtsg, lsd, jazoest)
+
+Exemplo:
+100012345678901
+datr=abc; c_user=100012345678901; xs=def...
+fb_dtsg=NAcOe... (opcional)
+---
+100012345678902
+datr=xyz; c_user=100012345678902; xs=uvw..."></textarea>
     <button class="btn btn-success mt-2" onclick="importarViaTexto()">
         <i class="fas fa-file-import"></i> Processar Perfis do Texto
     </button>
@@ -433,8 +445,8 @@
         const jazoest = document.getElementById('jazoest').value.trim();
 
         // Validação
-        if (!uid || !cookie || !fb_dtsg || !lsd || !jazoest) {
-            alert('Todos os campos são obrigatórios!');
+        if (!uid || !cookie) {
+            alert('UID e Cookie são obrigatórios!');
             return;
         }
 
@@ -776,8 +788,9 @@ perfisEmissores.forEach((perfil, index) => {
 
     // Função para validar UID (apenas números)
     function validarUID(uid) {
-        return /^\d+$/.test(uid) && uid.length >= 10;
-    }
+    // UID do Facebook: números, 15-16 dígitos, não pode começar com 0
+    return /^[1-9]\d{14,15}$/.test(uid);
+}
 
     // Melhorar validação do perfil
     function adicionarPerfilMelhorado() {
@@ -798,8 +811,8 @@ perfisEmissores.forEach((perfil, index) => {
             return;
         }
 
-        if (!cookie || !cookie.includes('c_user=')) {
-            alert('Cookie inválido! Deve conter pelo menos "c_user="');
+        if (!cookie || !validarCookie(cookie)) {
+            alert('Cookie inválido! Deve conter: c_user=, xs=, datr=');
             return;
         }
 
@@ -1186,44 +1199,101 @@ function importarViaTexto() {
     if (!texto) {
         mostrarToast('Campo vazio!', 'error');
         return;
-    }const blocos = texto.split(/perfil\s+\d+/i).map(b => b.trim()).filter(b => b);
+    }
 
-let perfisImportados = 0;
+    // Dividir por perfis (aceita múltiplos formatos)
+    const blocos = texto.split(/(?:perfil\s+\d+|---|\n\n)/i).filter(b => b.trim());
+    
+    let perfisImportados = 0;
+    const erros = [];
 
-blocos.forEach((bloco, index) => {
-    const linhas = bloco.split('\n').map(l => l.trim()).filter(l => l);
+    blocos.forEach((bloco, index) => {
+        const linhas = bloco.split('\n').map(l => l.trim()).filter(l => l);
+        
+        let uid = '';
+        let cookie = '';
+        let fb_dtsg = '';
+        let lsd = '';
+        let jazoest = '';
 
-    if (linhas.length < 2) return;
+        // Extrair informações de cada linha
+        linhas.forEach(linha => {
+            if (/^\d{10,}$/.test(linha)) {
+                uid = linha;
+            } else if (linha.includes('c_user=') && linha.includes('datr=')) {
+                cookie = linha;
+            } else if (linha.includes('fb_dtsg=') || linha.startsWith('NAc')) {
+                fb_dtsg = linha.replace('fb_dtsg=', '');
+            } else if (linha.includes('lsd=') || linha.startsWith('AV')) {
+                lsd = linha.replace('lsd=', '');
+            } else if (linha.includes('jazoest=') || /^\d{4,5}$/.test(linha)) {
+                jazoest = linha.replace('jazoest=', '');
+            }
+        });
 
-    const uidMatch = linhas.find(l => /^\d{10,}$/.test(l));
-    const cookieMatch = linhas.find(l => l.includes("c_user="));
+        // Validar dados mínimos
+        if (!uid || !validarCookie(cookie)) {
+            erros.push(`Perfil ${index + 1}: dados insuficientes`);
+            return;
+        }
 
-    if (!uidMatch || !cookieMatch) return;
+        // Verificar duplicata
+        if (perfisEmissores.some(p => p.uid === uid)) {
+            erros.push(`Perfil ${index + 1}: UID já existe`);
+            return;
+        }
 
-    const uid = uidMatch;
-    const cookie = cookieMatch;
+        const perfil = {
+            uid,
+            cookie,
+            fb_dtsg: fb_dtsg || '',
+            lsd: lsd || '',
+            jazoest: jazoest || '',
+            label: `Perfil ${perfisEmissores.length + 1}`
+        };
 
-    if (perfisEmissores.some(p => p.uid === uid)) return; // já existe
+        perfisEmissores.push(perfil);
+        perfisImportados++;
+    });
 
-    // Extrair tokens (opcional — o backend já busca se estiverem vazios)
-    const perfil = {
-        uid,
-        cookie,
-        fb_dtsg: "",
-        lsd: "",
-        jazoest: "",
-        label: `Perfil ${index + 1}`
-    };
+    atualizarListaPerfis();
+    atualizarContadores();
+    salvarPerfisNoLocalStorage();
 
-    perfisEmissores.push(perfil);
-    perfisImportados++;
-});
-
-atualizarListaPerfis();
-atualizarContadores();
-salvarPerfisNoLocalStorage();
-
-mostrarToast(` ${perfisImportados} perfis importados via texto!`, 'success');
-adicionarLog(` Importação rápida: ${perfisImportados} perfis adicionados via campo de texto.`);}
+    // Feedback detalhado
+    if (perfisImportados > 0) {
+        mostrarToast(`${perfisImportados} perfis importados!`, 'success');
+    }
+    if (erros.length > 0) {
+        console.warn('Erros na importação:', erros);
+        mostrarToast(`${erros.length} perfis com erro`, 'warning');
+    }
+}
+function validarCookie(cookie) {
+    const required = ['c_user=', 'xs=', 'datr='];
+    return required.every(field => cookie.includes(field));
+}
+function adicionarLogDetalhado(tipo, emissor, alvo, erro) {
+    const timestamp = new Date().toLocaleTimeString('pt-BR');
+    const logs = document.getElementById('logs');
+    
+    let icone = '';
+    switch(tipo) {
+        case 'sucesso': icone = '✅'; break;
+        case 'erro': icone = '❌'; break;
+        case 'info': icone = 'ℹ️'; break;
+        default: icone = '•';
+    }
+    
+    if (emissor && alvo) {
+        logs.textContent += `[${timestamp}] ${icone} ${emissor} → ${alvo}`;
+        if (erro) logs.textContent += ` | ${erro}`;
+        logs.textContent += '\n';
+    } else {
+        logs.textContent += `[${timestamp}] ${icone} ${emissor || alvo}\n`;
+    }
+    
+    logs.scrollTop = logs.scrollHeight;
+}
 </script></body>
 </html>
