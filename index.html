@@ -1,4 +1,31 @@
-<!DOCTYPE html>
+quero que me ajude a aplicar somente essas mudanças nesse código e você me fala o que preciso fazer de antes e deposi bem didacito e explicativo que preciso fazer ou até mesmo aonde devo colocar o código para adicionar essa mudança nele:mudanças:Use este helper para transformar aquela string do FB em JSON e detectar checkpoint:
+function parseFb(data) {
+  if (typeof data !== 'string') return { kind: 'unknown' };
+  const m = data.match(/^for\s\(\s;;\s\);\s(\{[\s\S]*\})$/);
+  if (!m) return { kind: 'unknown' };
+  const obj = JSON.parse(m[1]);
+  // procura redirect para checkpoint
+  const reqs = obj?.jsmods?.require || [];
+  for (const r of reqs) {
+    if (r[0] === "ServerRedirect" && r[1] === "redirectPageTo") {
+      const url = r[3]?.[0] || "";
+      if (url.includes("/checkpoint/")) {
+        return { kind: 'checkpoint', url };
+      }
+    }
+  }
+  return { kind: 'ok', obj };
+}
+No ponto onde você já analisa friendRequest, faça:
+const parsed = parseFb(log.results.friendRequest?.data);
+if (parsed.kind === 'checkpoint') {
+  adicionarLog( Checkpoint exigido para perfil ${log.emissor}: ${parsed.url});
+  mostrarToast(Perfil ${log.emissor}: checkpoint de segurança. Faça login e verifique a conta., 'warning');
+  perfisBloqueados.add(log.emissor);
+  const idx = perfisEmissores.findIndex(p => p.uid === log.emissor);
+  if (idx !== -1) document.querySelector(#emissor_${idx})?.checked = false;
+  return; // pule o restante
+}código:<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -20,31 +47,23 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.container {
+}.container {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     margin: 20px auto;
     padding: 30px;
-}
-
-.header {
+}.header {
     text-align: center;
     margin-bottom: 40px;
     padding: 20px 0;
     border-bottom: 2px solid #e9ecef;
-}
-
-.header h1 {
+}.header h1 {
     color: var(--primary-color);
     font-weight: 700;
     margin-bottom: 10px;
-}
-
-.section-card {
+}.section-card {
     background: white;
     border-radius: 15px;
     padding: 25px;
@@ -52,27 +71,19 @@ body {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
     border: 1px solid #e9ecef;
     transition: all 0.3s ease;
-}
-
-.section-card:hover {
+}.section-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-}
-
-.section-title {
+}.section-title {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
     color: var(--dark-color);
     font-weight: 600;
-}
-
-.section-title i {
+}.section-title i {
     margin-right: 10px;
     color: var(--primary-color);
-}
-
-.perfil-card {
+}.perfil-card {
     background: #f8f9fa;
     border: 1px solid #dee2e6;
     border-radius: 10px;
@@ -80,13 +91,9 @@ body {
     margin-bottom: 15px;
     position: relative;
     transition: all 0.3s ease;
-}
-
-.perfil-card:hover {
+}.perfil-card:hover {
     background: #e9ecef;
-}
-
-.btn-remove-perfil {
+}.btn-remove-perfil {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -101,50 +108,36 @@ body {
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;
-}
-
-.btn-remove-perfil:hover {
+}.btn-remove-perfil:hover {
     background: #c82333;
     transform: scale(1.1);
-}
-
-.btn-primary {
+}.btn-primary {
     background: linear-gradient(45deg, var(--primary-color), #4267B2);
     border: none;
     border-radius: 25px;
     padding: 12px 30px;
     font-weight: 600;
     transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
+}.btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3);
-}
-
-.btn-success {
+}.btn-success {
     background: linear-gradient(45deg, var(--success-color), #28a745);
     border: none;
     border-radius: 25px;
     padding: 12px 30px;
     font-weight: 600;
     transition: all 0.3s ease;
-}
-
-.btn-success:hover {
+}.btn-success:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(25, 135, 84, 0.3);
-}
-
-.btn-secondary {
+}.btn-secondary {
     background: #6c757d;
     border: none;
     border-radius: 25px;
     padding: 8px 20px;
     transition: all 0.3s ease;
-}
-
-.counter {
+}.counter {
     background: var(--primary-color);
     color: white;
     border-radius: 20px;
@@ -153,9 +146,7 @@ body {
     font-weight: 600;
     display: inline-block;
     margin-left: 10px;
-}
-
-.logs-area {
+}.logs-area {
     background: #1e1e1e;
     color: #f8f9fa;
     border-radius: 10px;
@@ -165,19 +156,13 @@ body {
     overflow-y: auto;
     border: none;
     white-space: pre-wrap;
-}
-
-.loading {
+}.loading {
     display: none;
     text-align: center;
     padding: 20px;
-}
-
-.loading.show {
+}.loading.show {
     display: block;
-}
-
-.spinner {
+}.spinner {
     border: 4px solid #f3f3f3;
     border-top: 4px solid var(--primary-color);
     border-radius: 50%;
@@ -185,24 +170,16 @@ body {
     height: 40px;
     animation: spin 1s linear infinite;
     margin: 0 auto 10px;
-}
-
-@keyframes spin {
+}@keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-
-.form-control:focus {
+}.form-control:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 0.2rem rgba(24, 119, 242, 0.25);
-}
-
-.alert {
+}.alert {
     border-radius: 10px;
     border: none;
-}
-
-.stats {
+}.stats {
     display: flex;
     justify-content: space-around;
     background: linear-gradient(45deg, #667eea, #764ba2);
@@ -210,55 +187,38 @@ body {
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 25px;
-}
-
-.stat-item {
+}.stat-item {
     text-align: center;
-}
-
-.stat-number {
+}.stat-number {
     font-size: 2em;
     font-weight: 700;
     display: block;
-}
-
-.stat-label {
+}.stat-label {
     font-size: 0.9em;
     opacity: 0.9;
-}
-
-.import-export-buttons {
+}.import-export-buttons {
     display: flex;
     gap: 10px;
     margin-top: 15px;
-}
-
-.hidden-file-input {
+}.hidden-file-input {
     display: none;
-}
-
-@media (max-width: 768px) {
+}@media (max-width: 768px) {
     .container {
         margin: 10px;
         padding: 20px;
-    }
-    
-    .stats {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .import-export-buttons {
-        flex-direction: column;
-    }
-}</style></head><body>
+    }.stats {
+    flex-direction: column;
+    gap: 15px;
+}
+
+.import-export-buttons {
+    flex-direction: column;
+}}</style></head><body>
     <div class="container">
         <div class="header">
             <h1><i class="fab fa-facebook"></i> Automação Facebook</h1>
             <p class="text-muted">Plataforma para envio automático de solicitações de amizade</p>
-        </div>
-
-<!-- Estatísticas -->
+        </div><!-- Estatísticas -->
 <div class="stats">
     <div class="stat-item">
         <span class="stat-number" id="countEmissores">0</span>
@@ -282,63 +242,61 @@ body {
         <span class="counter" id="emissorCounter">0/50</span>
     </h3>
 
-    <div class="row">
-        <div class="col-md-2">
-            <label class="form-label">UID (c_user)</label>
-            <input type="text" class="form-control" id="uid" placeholder="Ex: 100012345678901">
-        </div>
-        <div class="col-md-6">
-            <label class="form-label">Cookie (completo)</label>
-            <input type="text" class="form-control" id="cookie" placeholder="datr=...; sb=...; ps_l=...; c_user=...">
-        </div>
-        <div class="col-md-2">
-            <label class="form-label">fb_dtsg</label>
-            <input type="text" class="form-control" id="fb_dtsg" placeholder="NAcOe...">
-        </div>
-        <div class="col-md-2">
-            <label class="form-label">LSD</label>
-            <input type="text" class="form-control" id="lsd" placeholder="AVr...">
-        </div>
+<div class="row">
+    <div class="col-md-2">
+        <label class="form-label">UID (c_user)</label>
+        <input type="text" class="form-control" id="uid" placeholder="Ex: 100012345678901">
     </div>
-    <div class="row mt-3">
-        <div class="col-md-2">
-            <label class="form-label">Jazoest</label>
-            <input type="text" class="form-control" id="jazoest" placeholder="2957">
-        </div>
-        <div class="col-md-10 d-flex align-items-end">
-            <button class="btn btn-primary me-2" onclick="adicionarPerfil()">
-                <i class="fas fa-plus"></i> Adicionar Perfil
-            </button>
-        </div>
+    <div class="col-md-6">
+        <label class="form-label">Cookie (completo)</label>
+        <input type="text" class="form-control" id="cookie" placeholder="datr=...; sb=...; ps_l=...; c_user=...">
     </div>
+    <div class="col-md-2">
+        <label class="form-label">fb_dtsg</label>
+        <input type="text" class="form-control" id="fb_dtsg" placeholder="NAcOe...">
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">LSD</label>
+        <input type="text" class="form-control" id="lsd" placeholder="AVr...">
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-md-2">
+        <label class="form-label">Jazoest</label>
+        <input type="text" class="form-control" id="jazoest" placeholder="2957">
+    </div>
+    <div class="col-md-10 d-flex align-items-end">
+        <button class="btn btn-primary me-2" onclick="adicionarPerfil()">
+            <i class="fas fa-plus"></i> Adicionar Perfil
+        </button>
+    </div>
+</div>
 
-    <div class="import-export-buttons">
-        <button class="btn btn-secondary" onclick="exportarPerfis()">
-            <i class="fas fa-download"></i> Exportar Perfis
-        </button>
-        <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
-            <i class="fas fa-upload"></i> Importar Perfis
-        </button>
-        <button class="btn btn-outline-danger" onclick="limparPerfis()">
-            <i class="fas fa-trash"></i> Limpar Todos
-        </button>
-    </div>
-    <input type="file" id="fileInput" class="hidden-file-input" accept=".json" onchange="importarPerfis(event)"><div class="mt-4">
-    <label class="form-label"><strong>Importação Rápida</strong></label>
-    <textarea class="form-control" id="importacaoRapida" rows="8" placeholder="Cole aqui os dados dos perfis (ex: perfil 1\n1000123...\ncookie=...;)"></textarea>
-    <button class="btn btn-success mt-2" onclick="importarViaTexto()">
-        <i class="fas fa-file-import"></i> Processar Perfis do Texto
+<div class="import-export-buttons">
+    <button class="btn btn-secondary" onclick="exportarPerfis()">
+        <i class="fas fa-download"></i> Exportar Perfis
+    </button>
+    <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+        <i class="fas fa-upload"></i> Importar Perfis
+    </button>
+    <button class="btn btn-outline-danger" onclick="limparPerfis()">
+        <i class="fas fa-trash"></i> Limpar Todos
     </button>
 </div>
+<input type="file" id="fileInput" class="hidden-file-input" accept=".json" onchange="importarPerfis(event)"><div class="mt-4">
+<label class="form-label"><strong>Importação Rápida</strong></label>
+<textarea class="form-control" id="importacaoRapida" rows="8" placeholder="Cole aqui os dados dos perfis (ex: perfil 1\n1000123...\ncookie=...;)"></textarea>
+<button class="btn btn-success mt-2" onclick="importarViaTexto()">
+    <i class="fas fa-file-import"></i> Processar Perfis do Texto
+</button></div>
 
-    <div id="perfisLista" class="mt-4"></div><div class="mb-4">
-    <label class="form-label"><strong>Selecionar emissores para envio:</strong></label>
-    <div id="selecionar-emissores" class="form-check"></div>
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="checkAll" onclick="toggleTodosEmissores()">
-        <label class="form-check-label" for="checkAll">Selecionar Todos</label>
-    </div>
-</div>
+<div id="perfisLista" class="mt-4"></div><div class="mb-4">
+<label class="form-label"><strong>Selecionar emissores para envio:</strong></label>
+<div id="selecionar-emissores" class="form-check"></div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" id="checkAll" onclick="toggleTodosEmissores()">
+    <label class="form-check-label" for="checkAll">Selecionar Todos</label>
+</div></div>
 
 </div>
 
@@ -350,18 +308,17 @@ body {
         <span class="counter" id="alvoCounter">0/50</span>
     </h3>
     
-    <div class="mb-3">
-        <label class="form-label">UIDs dos perfis alvo (um por linha ou separados por vírgula)</label>
-        <textarea class="form-control" id="alvos" rows="6" 
-            placeholder="100012345678901&#10;100012345678902&#10;100012345678903&#10;...ou...&#10;100012345678901, 100012345678902, 100012345678903"
-            oninput="contarAlvos()"></textarea>
-        <small class="text-muted">Máximo: 50 perfis alvo</small>
-    </div>
-
-    <button class="btn btn-outline-danger" onclick="limparAlvos()">
-        <i class="fas fa-trash"></i> Limpar Alvos
-    </button>
+<div class="mb-3">
+    <label class="form-label">UIDs dos perfis alvo (um por linha ou separados por vírgula)</label>
+    <textarea class="form-control" id="alvos" rows="6" 
+        placeholder="100012345678901&#10;100012345678902&#10;100012345678903&#10;...ou...&#10;100012345678901, 100012345678902, 100012345678903"
+        oninput="contarAlvos()"></textarea>
+    <small class="text-muted">Máximo: 50 perfis alvo</small>
 </div>
+
+<button class="btn btn-outline-danger" onclick="limparAlvos()">
+    <i class="fas fa-trash"></i> Limpar Alvos
+</button></div>
 
 <!-- URL da API -->
 <div class="section-card">
@@ -370,14 +327,13 @@ body {
         Configuração da API
     </h3>
     
-    <div class="mb-3">
-        <label class="form-label">URL da API</label>
-        <input type="url" class="form-control" id="apiUrl" 
-            value="https://SEU_PROJETO.vercel.app/api/send-requests"
-            placeholder="https://seu-projeto.vercel.app/api/send-requests">
-        <small class="text-muted">Substitua "SEU_PROJETO" pelo nome real do seu projeto no Vercel</small>
-    </div>
-</div>
+<div class="mb-3">
+    <label class="form-label">URL da API</label>
+    <input type="url" class="form-control" id="apiUrl" 
+        value="https://SEU_PROJETO.vercel.app/api/send-requests"
+        placeholder="https://seu-projeto.vercel.app/api/send-requests">
+    <small class="text-muted">Substitua "SEU_PROJETO" pelo nome real do seu projeto no Vercel</small>
+</div></div>
 
 <!-- Botões de Ação -->
 <div class="text-center mb-4">
@@ -1245,3 +1201,4 @@ mostrarToast(` ${perfisImportados} perfis importados via texto!`, 'success');
 adicionarLog(` Importação rápida: ${perfisImportados} perfis adicionados via campo de texto.`);}
 </script></body>
 </html>
+
