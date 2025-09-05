@@ -409,27 +409,6 @@ body {
     // Estados da aplicação
     let perfisEmissores = [];
     let perfisAlvo = [];
-    let perfisBloqueados = new Set();
-
-    // Função para analisar resposta do Facebook
-    function parseFb(data) {
-        if (typeof data !== 'string') return { kind: 'unknown' };
-        const m = data.match(/^for\s*\(\s*;;\s*\);\s*(\{[\s\S]*\})$/);
-        if (!m) return { kind: 'unknown' };
-        const obj = JSON.parse(m[1]);
-
-        // procura redirect para checkpoint
-        const reqs = obj?.jsmods?.require || [];
-        for (const r of reqs) {
-            if (r[0] === "ServerRedirect" && r[1] === "redirectPageTo") {
-                const url = r[3]?.[0] || "";
-                if (url.includes("/checkpoint/")) {
-                    return { kind: 'checkpoint', url };
-                }
-            }
-        }
-        return { kind: 'ok', obj };
-    }
 
     function salvarPerfisNoLocalStorage() {
         localStorage.setItem('perfisEmissores', JSON.stringify(perfisEmissores));
@@ -474,7 +453,7 @@ body {
         atualizarContadores();
     }
 
-    // Função para atualizar la lista de perfis
+    // Função para atualizar a lista de perfis
     function atualizarListaPerfis() {
         const lista = document.getElementById('perfisLista');
         
@@ -491,51 +470,55 @@ body {
                 <div class="row">
                     <div class="col-md-2">
                         <strong>UID:</strong>
+
                         <code>${perfil.uid}</code>
                     </div>
                     <div class="col-md-6">
                         <strong>Cookie:</strong>
+
                         <code>${perfil.cookie.substring(0, 50)}...</code>
                     </div>
                     <div class="col-md-2">
                         <strong>fb_dtsg:</strong>
+
                         <code>${perfil.fb_dtsg.substring(0, 20)}...</code>
                     </div>
                     <div class="col-md-2">
                         <strong>LSD:</strong>
+
                         <code>${perfil.lsd}</code>
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-2">
                         <strong>Jazoest:</strong>
+
                         <code>${perfil.jazoest}</code>
                     </div>
                 </div>
             </div>
         `).join('');
-        
-        document.getElementById("selecionar-emissores").innerHTML = ''; // limpa anteriores
-        perfisEmissores.forEach((perfil, index) => {
-            const checkbox = document.createElement('input');
-            checkbox.type = "checkbox";
-            checkbox.className = "form-check-input";
-            checkbox.id = `emissor_${index}`;
-            checkbox.value = index;
-            checkbox.checked = !perfisBloqueados.has(perfil.uid); // não selecionar se bloqueado
+document.getElementById("selecionar-emissores").innerHTML = ''; // limpa anteriores
+perfisEmissores.forEach((perfil, index) => {
+    const checkbox = document.createElement('input');
+    checkbox.type = "checkbox";
+    checkbox.className = "form-check-input";
+    checkbox.id = `emissor_${index}`;
+    checkbox.value = index;
+    checkbox.checked = true; // por padrão, todos selecionados
 
-            const label = document.createElement('label');
-            label.className = "form-check-label ms-1";
-            label.htmlFor = checkbox.id;
-            label.textContent = perfil.label || perfil.uid;
+    const label = document.createElement('label');
+    label.className = "form-check-label ms-1";
+    label.htmlFor = checkbox.id;
+    label.textContent = perfil.label || perfil.uid;
 
-            const wrapper = document.createElement('div');
-            wrapper.className = "form-check";
-            wrapper.appendChild(checkbox);
-            wrapper.appendChild(label);
+    const wrapper = document.createElement('div');
+    wrapper.className = "form-check";
+    wrapper.appendChild(checkbox);
+    wrapper.appendChild(label);
 
-            document.getElementById("selecionar-emissores").appendChild(wrapper);
-        });
+    document.getElementById("selecionar-emissores").appendChild(wrapper);
+});
     }
 
     // Função para remover perfil
@@ -584,7 +567,6 @@ body {
     function limparPerfis() {
         if (confirm('Tem certeza que deseja limpar todos os perfis emissores?')) {
             perfisEmissores = [];
-            perfisBloqueados.clear();
             atualizarListaPerfis();
             atualizarContadores();
             localStorage.removeItem('perfisEmissores');
@@ -639,7 +621,6 @@ body {
                     // Confirmar importação
                     if (confirm(`Importar ${dados.perfis.length} perfis? (Isso substituirá os perfis atuais)`)) {
                         perfisEmissores = dados.perfis.slice(0, 50); // Limitar a 50
-                        perfisBloqueados.clear();
                         atualizarListaPerfis();
                         atualizarContadores();
                         adicionarLog(` ${perfisEmissores.length} perfis importados com sucesso!`);
@@ -673,17 +654,9 @@ body {
 
     // Função principal para enviar requisições
     async function enviarRequisicoes() {
-        const emissoresSelecionados = [];
-        document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked").forEach(cb => {
-            const index = parseInt(cb.value);
-            if (!isNaN(index)) {
-                emissoresSelecionados.push(perfisEmissores[index]);
-            }
-        });
-        
         // Validações
-        if (emissoresSelecionados.length === 0) {
-            mostrarToast('Selecione pelo menos um perfil emissor!', 'error');
+        if (perfisEmissores.length === 0) {
+            mostrarToast('Adicione pelo menos um perfil emissor!', 'error');
             return;
         }
 
@@ -708,7 +681,7 @@ body {
 
         // Preparar dados
         const dados = {
-            emissores: emissoresSelecionados,
+            emissores: perfisEmissores,
             alvos: perfisAlvo
         };
 
@@ -717,8 +690,8 @@ body {
         document.getElementById('btnEnviar').disabled = true;
         limparLogs();
         
-        adicionarLog(` Iniciando envio de ${emissoresSelecionados.length * perfisAlvo.length} solicitações...`);
-        adicionarLog(` ${emissoresSelecionados.length} emissores → ${perfisAlvo.length} alvos`);
+        adicionarLog(` Iniciando envio de ${perfisEmissores.length * perfisAlvo.length} solicitações...`);
+        adicionarLog(` ${perfisEmissores.length} emissores → ${perfisAlvo.length} alvos`);
         adicionarLog(` API: ${apiUrl}\n`);
 
         try {
@@ -729,51 +702,9 @@ body {
 
             // Processar logs da resposta
             if (resultado.logs && Array.isArray(resultado.logs)) {
-                for (const log of resultado.logs) {
-                    const emissor = log.emissor;
-                    const alvo = log.alvo;
-                    const friendRequest = log.results.friendRequest;
-
-                    // Verificar checkpoint
-                    if (friendRequest?.data) {
-                        const parsed = parseFb(log.results.friendRequest?.data);
-                        if (parsed.kind === 'checkpoint') {
-                            adicionarLog(`🚧 Checkpoint exigido para perfil ${log.emissor}: ${parsed.url}`);
-                            mostrarToast(`Perfil ${log.emissor}: checkpoint de segurança. Faça login e verifique a conta.`, 'warning');
-                            perfisBloqueados.add(log.emissor);
-                            const idx = perfisEmissores.findIndex(p => p.uid === log.emissor);
-                            if (idx !== -1) document.querySelector(`#emissor_${idx}`)?.checked = false;
-                            continue; // pule o restante
-                        }
-                    }
-
-                    if (friendRequest && friendRequest.data && friendRequest.data.errors) {
-                        const erros = friendRequest.data.errors;
-
-                        erros.forEach(err => {
-                            const resumo = err.summary || "Erro desconhecido";
-                            const descricao = err.description || "";
-                            const codigo = err.api_error_code || err.code || "sem código";
-
-                            // Mostrar no log e notificação do frontend
-                            adicionarLog(` AVISO PARA PERFIL ${emissor}`);
-                            adicionarLog(`Erro ${codigo}: ${resumo}`);
-                            adicionarLog(`Descrição: ${descricao}\n`);
-
-                            mostrarToast(`Perfil ${emissor}: ${resumo}`, "warning");
-                        });
-                        perfisBloqueados.add(emissor);
-                        const index = perfisEmissores.findIndex(p => p.uid === emissor);
-                        if (index !== -1) {
-                            const checkbox = document.querySelector(`#emissor_${index}`);
-                            if (checkbox) {
-                                checkbox.checked = false;
-                            }
-                        }
-                    } else {
-                        adicionarLog(` Perfil ${emissor} enviou para ${alvo} com sucesso.`);
-                    }
-                }
+                resultado.logs.forEach(log => {
+                    adicionarLog(log);
+                });
             }
 
             // Mostrar resumo
@@ -784,7 +715,7 @@ body {
                 adicionarLog(` Taxa de sucesso: ${resultado.resumo.taxa_sucesso || '0%'}`);
                 
                 const sucessos = resultado.resumo.sucessos || 0;
-                const total = emissoresSelecionados.length * perfisAlvo.length;
+                const total = perfisEmissores.length * perfisAlvo.length;
                 
                 if (sucessos > 0) {
                     mostrarToast(`${sucessos}/${total} solicitações enviadas com sucesso!`, 'success');
@@ -1017,10 +948,170 @@ body {
         }
     }
 
-    function toggleTodosEmissores() {
-        const checkboxes = document.querySelectorAll("#selecionar-emissores input[type='checkbox']");
-        const allChecked = document.getElementById("checkAll").checked;
-        checkboxes.forEach(cb => cb.checked = allChecked);
+function toggleTodosEmissores() {
+    const checkboxes = document.querySelectorAll("#selecionar-emissores input[type='checkbox']");
+    const allChecked = document.getElementById("checkAll").checked;
+    checkboxes.forEach(cb => cb.checked = allChecked);
+}
+
+    // Função principal melhorada para enviar requisições
+    async function enviarRequisicoes() {
+const emissoresSelecionados = [];
+document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked").forEach(cb => {
+    const index = parseInt(cb.value);
+    if (!isNaN(index)) {
+        emissoresSelecionados.push(perfisEmissores[index]);
+    }
+});
+        // Validações
+        if (emissoresSelecionados.length === 0) {
+            mostrarToast('Selecione pelo menos um perfil emissor!', 'error');
+            return;
+        }
+
+        if (perfisAlvo.length === 0) {
+            mostrarToast('Adicione pelo menos um perfil alvo!', 'error');
+            return;
+        }
+
+        const apiUrl = document.getElementById('apiUrl').value.trim();
+        if (!apiUrl) {
+            mostrarToast('Informe a URL da API!', 'error');
+            return;
+        }
+
+        // Validar URL
+        try {
+            new URL(apiUrl);
+        } catch {
+            mostrarToast('URL da API inválida!', 'error');
+            return;
+        }
+
+        // Preparar dados
+        const dados = {
+            emissores: emissoresSelecionados,
+            alvos: perfisAlvo
+        };
+
+        // Mostrar loading
+        document.getElementById('loading').classList.add('show');
+        document.getElementById('btnEnviar').disabled = true;
+        limparLogs();
+        
+        adicionarLog(` Iniciando envio de ${emissoresSelecionados.length * perfisAlvo.length} solicitações...`);
+        adicionarLog(` ${emissoresSelecionados.length} emissores → ${perfisAlvo.length} alvos`);
+        adicionarLog(` API: ${apiUrl}\n`);
+
+        try {
+            const resultado = await enviarComRetry(apiUrl, dados);
+
+            adicionarLog(' Requisição enviada com sucesso!');
+            adicionarLog(' Processando resultados...\n');
+
+            // Processar logs da resposta
+if (resultado.logs && Array.isArray(resultado.logs)) {
+    const perfisBloqueados = new Set();
+    resultado.logs.forEach(log => {
+        const emissor = log.emissor;
+        const alvo = log.alvo;
+        const friendRequest = log.results.friendRequest;
+
+        // Verificar se há checkpoint mesmo com success=true
+        if (friendRequest && friendRequest.success && friendRequest.data && 
+            friendRequest.data.includes('checkpoint')) {
+            // Este é o caso de checkpoint que precisa ser tratado como erro
+            adicionarLog(` ERRO: Perfil ${emissor} encontrou checkpoint ao enviar para ${alvo}`);
+            
+            // Adicionar também ao console para logs técnicos
+            console.error(`Checkpoint detectado para emissor ${emissor} e alvo ${alvo}`);
+            
+            // Marcar perfil como problemático
+            perfisBloqueados.add(emissor);
+            const index = perfisEmissores.findIndex(p => p.uid === emissor);
+            if (index !== -1) {
+                const checkbox = document.querySelector(`#emissor_${index}`);
+                if (checkbox) {
+                    checkbox.checked = false;
+                }
+            }
+            
+            mostrarToast(`Perfil ${emissor}: Erro de checkpoint detectado`, "warning");
+        } 
+        else if (friendRequest && friendRequest.data && friendRequest.data.errors) {
+            const erros = friendRequest.data.errors;
+
+            erros.forEach(err => {
+                const resumo = err.summary || "Erro desconhecido";
+                const descricao = err.description || "";
+                const codigo = err.api_error_code || err.code || "sem código";
+
+                // Mostrar no log e notificação do frontend
+                adicionarLog(` AVISO PARA PERFIL ${emissor}`);
+                adicionarLog(`Erro ${codigo}: ${resumo}`);
+                adicionarLog(`Descrição: ${descricao}\n`);
+
+                mostrarToast(`Perfil ${emissor}: ${resumo}`, "warning");
+            });
+            perfisBloqueados.add(emissor);
+            const index = perfisEmissores.findIndex(p => p.uid === emissor);
+            if (index !== -1) {
+                const checkbox = document.querySelector(`#emissor_${index}`);
+                if (checkbox) {
+                    checkbox.checked = false;
+                }
+            }
+        } 
+        else {
+            adicionarLog(` Perfil ${emissor} enviou para ${alvo} com sucesso.`);
+        }
+    });
+}
+            
+
+            // Mostrar resumo
+            if (resultado.resumo) {
+                adicionarLog('\n RESUMO FINAL:');
+                adicionarLog(` Sucessos: ${resultado.resumo.sucessos || 0}`);
+                adicionarLog(` Erros: ${resultado.resumo.erros || 0}`);
+                adicionarLog(` Taxa de sucesso: ${resultado.resumo.taxa_sucesso || '0%'}`);
+                
+                const sucessos = resultado.resumo.sucessos || 0;
+                const total = emissoresSelecionados.length * perfisAlvo.length;
+                
+                if (sucessos > 0) {
+                    mostrarToast(`${sucessos}/${total} solicitações enviadas com sucesso!`, 'success');
+                }
+            }
+// Mostrar logs de erro detalhados
+if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
+    resultado.errosDetalhados.forEach((err, i) => {
+        adicionarLog(`ERRO ${i + 1}:`);
+        adicionarLog(`Perfil: ${err.perfil}`);
+        adicionarLog(`Alvo: ${err.alvo}`);
+        adicionarLog(`Erro: ${typeof err.erro === 'string' ? err.erro : JSON.stringify(err.erro)}`);
+        adicionarLog('---');
+    });
+}
+
+            // Mostrar dados adicionais se houver
+            if (resultado.detalhes) {
+                adicionarLog('\n DETALHES ADICIONAIS:');
+                Object.entries(resultado.detalhes).forEach(([key, value]) => {
+                    adicionarLog(`${key}: ${value}`);
+                });
+            }
+
+        } catch (error) {
+            adicionarLog(` Erro de conexão: ${error.message}`);
+            mostrarToast(`Erro: ${error.message}`, 'error');
+            console.error('Erro:', error);
+        } finally {
+            // Esconder loading
+            document.getElementById('loading').classList.remove('show');
+            document.getElementById('btnEnviar').disabled = false;
+            adicionarLog('\n Processo finalizado.');
+        }
     }
 
     // Função para validar URL da API
@@ -1134,54 +1225,49 @@ body {
         URL.revokeObjectURL(url);
         mostrarToast('Relatório baixado!', 'success');
     }
+function importarViaTexto() {
+    const texto = document.getElementById('importacaoRapida').value.trim();
+    if (!texto) {
+        mostrarToast('Campo vazio!', 'error');
+        return;
+    }const blocos = texto.split(/perfil\s+\d+/i).map(b => b.trim()).filter(b => b);
 
-    function importarViaTexto() {
-        const texto = document.getElementById('importacaoRapida').value.trim();
-        if (!texto) {
-            mostrarToast('Campo vazio!', 'error');
-            return;
-        }
-        
-        const blocos = texto.split(/perfil\s+\d+/i).map(b => b.trim()).filter(b => b);
+let perfisImportados = 0;
 
-        let perfisImportados = 0;
+blocos.forEach((bloco, index) => {
+    const linhas = bloco.split('\n').map(l => l.trim()).filter(l => l);
 
-        blocos.forEach((bloco, index) => {
-            const linhas = bloco.split('\n').map(l => l.trim()).filter(l => l);
+    if (linhas.length < 2) return;
 
-            if (linhas.length < 2) return;
+    const uidMatch = linhas.find(l => /^\d{10,}$/.test(l));
+    const cookieMatch = linhas.find(l => l.includes("c_user="));
 
-            const uidMatch = linhas.find(l => /^\d{10,}$/.test(l));
-            const cookieMatch = linhas.find(l => l.includes("c_user="));
+    if (!uidMatch || !cookieMatch) return;
 
-            if (!uidMatch || !cookieMatch) return;
+    const uid = uidMatch;
+    const cookie = cookieMatch;
 
-            const uid = uidMatch;
-            const cookie = cookieMatch;
+    if (perfisEmissores.some(p => p.uid === uid)) return; // já existe
 
-            if (perfisEmissores.some(p => p.uid === uid)) return; // já existe
+    // Extrair tokens (opcional — o backend já busca se estiverem vazios)
+    const perfil = {
+        uid,
+        cookie,
+        fb_dtsg: "",
+        lsd: "",
+        jazoest: "",
+        label: `Perfil ${index + 1}`
+    };
 
-            // Extrair tokens (opcional — o backend já busca se estiverem vazios)
-            const perfil = {
-                uid,
-                cookie,
-                fb_dtsg: "",
-                lsd: "",
-                jazoest: "",
-                label: `Perfil ${index + 1}`
-            };
+    perfisEmissores.push(perfil);
+    perfisImportados++;
+});
 
-            perfisEmissores.push(perfil);
-            perfisImportados++;
-        });
+atualizarListaPerfis();
+atualizarContadores();
+salvarPerfisNoLocalStorage();
 
-        atualizarListaPerfis();
-        atualizarContadores();
-        salvarPerfisNoLocalStorage();
-
-        mostrarToast(` ${perfisImportados} perfis importados via texto!`, 'success');
-        adicionarLog(` Importação rápida: ${perfisImportados} perfis adicionados via campo de texto.`);
-    }
-</script>
-</body>
+mostrarToast(` ${perfisImportados} perfis importados via texto!`, 'success');
+adicionarLog(` Importação rápida: ${perfisImportados} perfis adicionados via campo de texto.`);}
+</script></body>
 </html>
