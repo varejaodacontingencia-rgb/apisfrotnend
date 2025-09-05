@@ -282,7 +282,7 @@
             <h3 class="section-title">
                 <i class="fas fa-user-plus"></i>
                 Perfis Emissores
-                <span class="counter" id="emissorCounter">0/30</span>
+                <span class="counter" id="emissorCounter">0/50</span>
             </h3>
 
             <div class="row">
@@ -406,8 +406,8 @@
 
         // Função para adicionar perfil emissor
         function adicionarPerfil() {
-            if (perfisEmissores.length >= 30) {
-                alert('Máximo de 30 perfis emissores atingido!');
+            if (perfisEmissores.length >= 50) {
+                alert('Máximo de 50 perfis emissores atingido!');
                 return;
             }
 
@@ -520,7 +520,7 @@
 
         // Função para atualizar contadores
         function atualizarContadores() {
-            document.getElementById('emissorCounter').textContent = `${perfisEmissores.length}/30`;
+            document.getElementById('emissorCounter').textContent = `${perfisEmissores.length}/50`;
             document.getElementById('alvoCounter').textContent = `${perfisAlvo.length}/50`;
             document.getElementById('countEmissores').textContent = perfisEmissores.length;
             document.getElementById('countAlvos').textContent = perfisAlvo.length;
@@ -716,8 +716,8 @@
 
         // Melhorar validação do perfil
         function adicionarPerfilMelhorado() {
-            if (perfisEmissores.length >= 30) {
-                alert('Máximo de 30 perfis emissores atingido!');
+            if (perfisEmissores.length >= 50) {
+                alert('Máximo de 50 perfis emissores atingido!');
                 return;
             }
 
