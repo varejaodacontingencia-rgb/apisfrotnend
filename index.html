@@ -414,6 +414,7 @@
     // Estados da aplicação
     let perfisEmissores = [];
     let perfisAlvo = [];
+    let perfisBloqueados = new Set();
 
     function salvarPerfisNoLocalStorage() {
         localStorage.setItem('perfisEmissores', JSON.stringify(perfisEmissores));
@@ -708,7 +709,33 @@ perfisEmissores.forEach((perfil, index) => {
             // Processar logs da resposta
             if (resultado.logs && Array.isArray(resultado.logs)) {
                 resultado.logs.forEach(log => {
-                    adicionarLog(log);
+                    const emissor = log.emissor;
+    const alvo = log.alvo;
+    const friendRequest = log.results.friendRequest;
+
+    if (friendRequest && friendRequest.data && friendRequest.data.errors) {
+        const erros = friendRequest.data.errors;
+
+        erros.forEach(err => {
+            const resumo = err.summary || "Erro desconhecido";
+            const descricao = err.description || "";
+            const codigo = err.api_error_code || err.code || "sem código";
+
+            // Mostrar no log e notificação do frontend
+            adicionarLog(`⚠️ AVISO PARA PERFIL ${emissor}`);
+            adicionarLog(`Erro ${codigo}: ${resumo}`);
+            adicionarLog(`Descrição: ${descricao}\n`);
+
+            mostrarToast(`Perfil ${emissor}: ${resumo}`, "warning");
+        });
+        perfisBloqueados.add(emissor);
+        const index = perfisEmissores.findIndex(p => p.uid === emissor);
+        if (index !== -1) {
+            document.querySelector(`#emissor_${index}`)?.checked = false;
+        }
+    } else {
+        adicionarLog(`✅ Perfil ${emissor} enviou para ${alvo} com sucesso.`);
+    }
                 });
             }
 
@@ -1017,7 +1044,33 @@ document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked"
             // Processar logs da resposta
             if (resultado.logs && Array.isArray(resultado.logs)) {
                 resultado.logs.forEach(log => {
-                    adicionarLog(log);
+                    const emissor = log.emissor;
+    const alvo = log.alvo;
+    const friendRequest = log.results.friendRequest;
+
+    if (friendRequest && friendRequest.data && friendRequest.data.errors) {
+        const erros = friendRequest.data.errors;
+
+        erros.forEach(err => {
+            const resumo = err.summary || "Erro desconhecido";
+            const descricao = err.description || "";
+            const codigo = err.api_error_code || err.code || "sem código";
+
+            // Mostrar no log e notificação do frontend
+            adicionarLog(`⚠️ AVISO PARA PERFIL ${emissor}`);
+            adicionarLog(`Erro ${codigo}: ${resumo}`);
+            adicionarLog(`Descrição: ${descricao}\n`);
+
+            mostrarToast(`Perfil ${emissor}: ${resumo}`, "warning");
+        });
+        perfisBloqueados.add(emissor);
+        const index = perfisEmissores.findIndex(p => p.uid === emissor);
+        if (index !== -1) {
+            document.querySelector(`#emissor_${index}`)?.checked = false;
+        }
+    } else {
+        adicionarLog(`✅ Perfil ${emissor} enviou para ${alvo} com sucesso.`);
+    }
                 });
             }
 
