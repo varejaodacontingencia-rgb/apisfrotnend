@@ -1021,15 +1021,24 @@ if (resultado.logs && Array.isArray(resultado.logs)) {
         if (friendRequest && friendRequest.success) {
             let hasCheckpoint = false;
             
-            // Verificar se data é uma string e contém 'checkpoint'
-            if (typeof friendRequest.data === 'string' && friendRequest.data.includes('checkpoint')) {
-                hasCheckpoint = true;
+            // Verificar se data é uma string e contém padrão específico de checkpoint
+            if (typeof friendRequest.data === 'string') {
+                // Padrão mais específico para detectar checkpoint real
+                // Verifica se contém a estrutura típica de redirecionamento de checkpoint
+                if (friendRequest.data.includes('checkpoint') && 
+                    (friendRequest.data.includes('redirectPageTo') || 
+                     friendRequest.data.includes('ServerRedirect'))) {
+                    hasCheckpoint = true;
+                }
             }
             // Verificar se data é um objeto e contém a propriedade 'checkpoint' em qualquer nível
             else if (typeof friendRequest.data === 'object' && friendRequest.data !== null) {
-                // Converter objeto para string e verificar se contém 'checkpoint'
-                const dataString = JSON.stringify(friendRequest.data).toLowerCase();
-                if (dataString.includes('checkpoint')) {
+                // Verificar se é um objeto de checkpoint real (não apenas contém a string em algum lugar)
+                const dataString = JSON.stringify(friendRequest.data);
+                
+                // Padrão mais específico para checkpoint em objetos
+                if ((dataString.includes('"checkpoint"') || dataString.includes('/checkpoint/')) &&
+                    (dataString.includes('redirectPageTo') || dataString.includes('ServerRedirect'))) {
                     hasCheckpoint = true;
                 }
             }
