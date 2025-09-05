@@ -16,244 +16,243 @@
             --dark-color: #212529;
         }
 
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
+    .container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        margin: 20px auto;
+        padding: 30px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 20px 0;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .header h1 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+    .section-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        color: var(--dark-color);
+        font-weight: 600;
+    }
+
+    .section-title i {
+        margin-right: 10px;
+        color: var(--primary-color);
+    }
+
+    .perfil-card {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .perfil-card:hover {
+        background: #e9ecef;
+    }
+
+    .btn-remove-perfil {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: var(--danger-color);
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-remove-perfil:hover {
+        background: #c82333;
+        transform: scale(1.1);
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, var(--primary-color), #4267B2);
+        border: none;
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3);
+    }
+
+    .btn-success {
+        background: linear-gradient(45deg, var(--success-color), #28a745);
+        border: none;
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(25, 135, 84, 0.3);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        border: none;
+        border-radius: 25px;
+        padding: 8px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .counter {
+        background: var(--primary-color);
+        color: white;
+        border-radius: 20px;
+        padding: 5px 15px;
+        font-size: 0.9em;
+        font-weight: 600;
+        display: inline-block;
+        margin-left: 10px;
+    }
+
+    .logs-area {
+        background: #1e1e1e;
+        color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        font-family: 'Courier New', monospace;
+        max-height: 400px;
+        overflow-y: auto;
+        border: none;
+        white-space: pre-wrap;
+    }
+
+    .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .loading.show {
+        display: block;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(24, 119, 242, 0.25);
+    }
+
+    .alert {
+        border-radius: 10px;
+        border: none;
+    }
+
+    .stats {
+        display: flex;
+        justify-content: space-around;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2em;
+        font-weight: 700;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 0.9em;
+        opacity: 0.9;
+    }
+
+    .import-export-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .hidden-file-input {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            margin: 20px auto;
-            padding: 30px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 20px 0;
-            border-bottom: 2px solid #e9ecef;
-        }
-
-        .header h1 {
-            color: var(--primary-color);
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .section-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-
-        .section-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-        }
-
-        .section-title {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            color: var(--dark-color);
-            font-weight: 600;
-        }
-
-        .section-title i {
-            margin-right: 10px;
-            color: var(--primary-color);
-        }
-
-        .perfil-card {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .perfil-card:hover {
-            background: #e9ecef;
-        }
-
-        .btn-remove-perfil {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--danger-color);
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-remove-perfil:hover {
-            background: #c82333;
-            transform: scale(1.1);
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, var(--primary-color), #4267B2);
-            border: none;
-            border-radius: 25px;
-            padding: 12px 30px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3);
-        }
-
-        .btn-success {
-            background: linear-gradient(45deg, var(--success-color), #28a745);
-            border: none;
-            border-radius: 25px;
-            padding: 12px 30px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(25, 135, 84, 0.3);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            border: none;
-            border-radius: 25px;
-            padding: 8px 20px;
-            transition: all 0.3s ease;
-        }
-
-        .counter {
-            background: var(--primary-color);
-            color: white;
-            border-radius: 20px;
-            padding: 5px 15px;
-            font-size: 0.9em;
-            font-weight: 600;
-            display: inline-block;
-            margin-left: 10px;
-        }
-
-        .logs-area {
-            background: #1e1e1e;
-            color: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            font-family: 'Courier New', monospace;
-            max-height: 400px;
-            overflow-y: auto;
-            border: none;
-            white-space: pre-wrap;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
+            margin: 10px;
             padding: 20px;
         }
-
-        .loading.show {
-            display: block;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary-color);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(24, 119, 242, 0.25);
-        }
-
-        .alert {
-            border-radius: 10px;
-            border: none;
-        }
-
+        
         .stats {
-            display: flex;
-            justify-content: space-around;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 25px;
+            flex-direction: column;
+            gap: 15px;
         }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2em;
-            font-weight: 700;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
-        }
-
+        
         .import-export-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            flex-direction: column;
         }
-
-        .hidden-file-input {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                padding: 20px;
-            }
-            
-            .stats {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .import-export-buttons {
-                flex-direction: column;
-            }
-        }
-    </style>
-</head>
+    }
+</style></head>
 <body>
     <div class="container">
         <div class="header">
@@ -261,834 +260,966 @@
             <p class="text-muted">Plataforma para envio automático de solicitações de amizade</p>
         </div>
 
-        <!-- Estatísticas -->
-        <div class="stats">
-            <div class="stat-item">
-                <span class="stat-number" id="countEmissores">0</span>
-                <span class="stat-label">Perfis Emissores</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number" id="countAlvos">0</span>
-                <span class="stat-label">Perfis Alvo</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number" id="totalRequests">0</span>
-                <span class="stat-label">Total de Requests</span>
-            </div>
+    <!-- Estatísticas -->
+    <div class="stats">
+        <div class="stat-item">
+            <span class="stat-number" id="countEmissores">0</span>
+            <span class="stat-label">Perfis Emissores</span>
         </div>
-
-        <!-- Seção Perfis Emissores -->
-        <div class="section-card">
-            <h3 class="section-title">
-                <i class="fas fa-user-plus"></i>
-                Perfis Emissores
-                <span class="counter" id="emissorCounter">0/50</span>
-            </h3>
-
-            <div class="row">
-                <div class="col-md-2">
-                    <label class="form-label">UID (c_user)</label>
-                    <input type="text" class="form-control" id="uid" placeholder="Ex: 100012345678901">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Cookie (completo)</label>
-                    <input type="text" class="form-control" id="cookie" placeholder="datr=...; sb=...; ps_l=...; c_user=...">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">fb_dtsg</label>
-                    <input type="text" class="form-control" id="fb_dtsg" placeholder="NAcOe...">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">LSD</label>
-                    <input type="text" class="form-control" id="lsd" placeholder="AVr...">
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-2">
-                    <label class="form-label">Jazoest</label>
-                    <input type="text" class="form-control" id="jazoest" placeholder="2957">
-                </div>
-                <div class="col-md-10 d-flex align-items-end">
-                    <button class="btn btn-primary me-2" onclick="adicionarPerfil()">
-                        <i class="fas fa-plus"></i> Adicionar Perfil
-                    </button>
-                </div>
-            </div>
-
-            <div class="import-export-buttons">
-                <button class="btn btn-secondary" onclick="exportarPerfis()">
-                    <i class="fas fa-download"></i> Exportar Perfis
-                </button>
-                <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
-                    <i class="fas fa-upload"></i> Importar Perfis
-                </button>
-                <button class="btn btn-outline-danger" onclick="limparPerfis()">
-                    <i class="fas fa-trash"></i> Limpar Todos
-                </button>
-            </div>
-            <input type="file" id="fileInput" class="hidden-file-input" accept=".json" onchange="importarPerfis(event)">
-
-            <div id="perfisLista" class="mt-4"></div>
+        <div class="stat-item">
+            <span class="stat-number" id="countAlvos">0</span>
+            <span class="stat-label">Perfis Alvo</span>
         </div>
-
-        <!-- Seção Perfis Alvo -->
-        <div class="section-card">
-            <h3 class="section-title">
-                <i class="fas fa-bullseye"></i>
-                Perfis Alvo
-                <span class="counter" id="alvoCounter">0/50</span>
-            </h3>
-            
-            <div class="mb-3">
-                <label class="form-label">UIDs dos perfis alvo (um por linha ou separados por vírgula)</label>
-                <textarea class="form-control" id="alvos" rows="6" 
-                    placeholder="100012345678901&#10;100012345678902&#10;100012345678903&#10;...ou...&#10;100012345678901, 100012345678902, 100012345678903"
-                    oninput="contarAlvos()"></textarea>
-                <small class="text-muted">Máximo: 50 perfis alvo</small>
-            </div>
-
-            <button class="btn btn-outline-danger" onclick="limparAlvos()">
-                <i class="fas fa-trash"></i> Limpar Alvos
-            </button>
-        </div>
-
-        <!-- URL da API -->
-        <div class="section-card">
-            <h3 class="section-title">
-                <i class="fas fa-server"></i>
-                Configuração da API
-            </h3>
-            
-            <div class="mb-3">
-                <label class="form-label">URL da API</label>
-                <input type="url" class="form-control" id="apiUrl" 
-                    value="https://SEU_PROJETO.vercel.app/api/send-requests"
-                    placeholder="https://seu-projeto.vercel.app/api/send-requests">
-                <small class="text-muted">Substitua "SEU_PROJETO" pelo nome real do seu projeto no Vercel</small>
-            </div>
-        </div>
-
-        <!-- Botões de Ação -->
-        <div class="text-center mb-4">
-            <button class="btn btn-success btn-lg me-3" onclick="enviarRequisicoes()" id="btnEnviar">
-                <i class="fas fa-paper-plane"></i> Enviar Solicitações
-            </button>
-            <button class="btn btn-outline-secondary" onclick="limparLogs()">
-                <i class="fas fa-broom"></i> Limpar Logs
-            </button>
-        </div>
-
-        <!-- Loading -->
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Enviando solicitações de amizade...</p>
-        </div>
-
-        <!-- Logs -->
-        <div class="section-card">
-            <h3 class="section-title">
-                <i class="fas fa-terminal"></i>
-                Logs de Execução
-            </h3>
-            <div class="logs-area" id="logs">Aguardando execução...</div>
+        <div class="stat-item">
+            <span class="stat-number" id="totalRequests">0</span>
+            <span class="stat-label">Total de Requests</span>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Estados da aplicação
-        let perfisEmissores = [];
-        let perfisAlvo = [];
+    <!-- Seção Perfis Emissores -->
+    <div class="section-card">
+        <h3 class="section-title">
+            <i class="fas fa-user-plus"></i>
+            Perfis Emissores
+            <span class="counter" id="emissorCounter">0/50</span>
+        </h3>
 
-        function salvarPerfisNoLocalStorage() {
-            localStorage.setItem('perfisEmissores', JSON.stringify(perfisEmissores));
+        <div class="row">
+            <div class="col-md-2">
+                <label class="form-label">UID (c_user)</label>
+                <input type="text" class="form-control" id="uid" placeholder="Ex: 100012345678901">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Cookie (completo)</label>
+                <input type="text" class="form-control" id="cookie" placeholder="datr=...; sb=...; ps_l=...; c_user=...">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">fb_dtsg</label>
+                <input type="text" class="form-control" id="fb_dtsg" placeholder="NAcOe...">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">LSD</label>
+                <input type="text" class="form-control" id="lsd" placeholder="AVr...">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-2">
+                <label class="form-label">Jazoest</label>
+                <input type="text" class="form-control" id="jazoest" placeholder="2957">
+            </div>
+            <div class="col-md-10 d-flex align-items-end">
+                <button class="btn btn-primary me-2" onclick="adicionarPerfil()">
+                    <i class="fas fa-plus"></i> Adicionar Perfil
+                </button>
+            </div>
+        </div>
+
+        <div class="import-export-buttons">
+            <button class="btn btn-secondary" onclick="exportarPerfis()">
+                <i class="fas fa-download"></i> Exportar Perfis
+            </button>
+            <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-upload"></i> Importar Perfis
+            </button>
+            <button class="btn btn-outline-danger" onclick="limparPerfis()">
+                <i class="fas fa-trash"></i> Limpar Todos
+            </button>
+        </div>
+        <input type="file" id="fileInput" class="hidden-file-input" accept=".json" onchange="importarPerfis(event)">
+<div class="mt-4">
+    <label class="form-label"><strong>Importação Rápida</strong></label>
+    <textarea class="form-control" id="importacaoRapida" rows="8" placeholder="Cole aqui os dados dos perfis (ex: perfil 1\n1000123...\ncookie=...;)"></textarea>
+    <button class="btn btn-success mt-2" onclick="importarViaTexto()">
+        <i class="fas fa-file-import"></i> Processar Perfis do Texto
+    </button>
+</div>
+
+        <div id="perfisLista" class="mt-4"></div>
+<div class="mb-4">
+    <label class="form-label"><strong>Selecionar emissores para envio:</strong></label>
+    <div id="selecionar-emissores" class="form-check"></div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="checkAll" onclick="toggleTodosEmissores()">
+        <label class="form-check-label" for="checkAll">Selecionar Todos</label>
+    </div>
+</div>
+
+    </div>
+
+    <!-- Seção Perfis Alvo -->
+    <div class="section-card">
+        <h3 class="section-title">
+            <i class="fas fa-bullseye"></i>
+            Perfis Alvo
+            <span class="counter" id="alvoCounter">0/50</span>
+        </h3>
+        
+        <div class="mb-3">
+            <label class="form-label">UIDs dos perfis alvo (um por linha ou separados por vírgula)</label>
+            <textarea class="form-control" id="alvos" rows="6" 
+                placeholder="100012345678901&#10;100012345678902&#10;100012345678903&#10;...ou...&#10;100012345678901, 100012345678902, 100012345678903"
+                oninput="contarAlvos()"></textarea>
+            <small class="text-muted">Máximo: 50 perfis alvo</small>
+        </div>
+
+        <button class="btn btn-outline-danger" onclick="limparAlvos()">
+            <i class="fas fa-trash"></i> Limpar Alvos
+        </button>
+    </div>
+
+    <!-- URL da API -->
+    <div class="section-card">
+        <h3 class="section-title">
+            <i class="fas fa-server"></i>
+            Configuração da API
+        </h3>
+        
+        <div class="mb-3">
+            <label class="form-label">URL da API</label>
+            <input type="url" class="form-control" id="apiUrl" 
+                value="https://SEU_PROJETO.vercel.app/api/send-requests"
+                placeholder="https://seu-projeto.vercel.app/api/send-requests">
+            <small class="text-muted">Substitua "SEU_PROJETO" pelo nome real do seu projeto no Vercel</small>
+        </div>
+    </div>
+
+    <!-- Botões de Ação -->
+    <div class="text-center mb-4">
+        <button class="btn btn-success btn-lg me-3" onclick="enviarRequisicoes()" id="btnEnviar">
+            <i class="fas fa-paper-plane"></i> Enviar Solicitações
+        </button>
+        <button class="btn btn-outline-secondary" onclick="limparLogs()">
+            <i class="fas fa-broom"></i> Limpar Logs
+        </button>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Enviando solicitações de amizade...</p>
+    </div>
+
+    <!-- Logs -->
+    <div class="section-card">
+        <h3 class="section-title">
+            <i class="fas fa-terminal"></i>
+            Logs de Execução
+        </h3>
+        <div class="logs-area" id="logs">Aguardando execução...</div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Estados da aplicação
+    let perfisEmissores = [];
+    let perfisAlvo = [];
+
+    function salvarPerfisNoLocalStorage() {
+        localStorage.setItem('perfisEmissores', JSON.stringify(perfisEmissores));
+    }
+
+    // Função para adicionar perfil emissor
+    function adicionarPerfil() {
+        if (perfisEmissores.length >= 50) {
+            alert('Máximo de 50 perfis emissores atingido!');
+            return;
         }
 
-        // Função para adicionar perfil emissor
-        function adicionarPerfil() {
-            if (perfisEmissores.length >= 50) {
-                alert('Máximo de 50 perfis emissores atingido!');
-                return;
-            }
+        const uid = document.getElementById('uid').value.trim();
+        const cookie = document.getElementById('cookie').value.trim();
+        const fb_dtsg = document.getElementById('fb_dtsg').value.trim();
+        const lsd = document.getElementById('lsd').value.trim();
+        const jazoest = document.getElementById('jazoest').value.trim();
 
-            const uid = document.getElementById('uid').value.trim();
-            const cookie = document.getElementById('cookie').value.trim();
-            const fb_dtsg = document.getElementById('fb_dtsg').value.trim();
-            const lsd = document.getElementById('lsd').value.trim();
-            const jazoest = document.getElementById('jazoest').value.trim();
-
-            // Validação
-            if (!uid || !cookie || !fb_dtsg || !lsd || !jazoest) {
-                alert('Todos os campos são obrigatórios!');
-                return;
-            }
-
-            // Verificar se UID já existe
-            if (perfisEmissores.some(p => p.uid === uid)) {
-                alert('Este UID já foi cadastrado!');
-                return;
-            }
-
-            const perfil = { uid, cookie, fb_dtsg, lsd, jazoest };
-            perfisEmissores.push(perfil);
-
-            // Limpar formulário
-            document.getElementById('uid').value = '';
-            document.getElementById('cookie').value = '';
-            document.getElementById('fb_dtsg').value = '';
-            document.getElementById('lsd').value = '';
-            document.getElementById('jazoest').value = '';
-
-            atualizarListaPerfis();
-            atualizarContadores();
+        // Validação
+        if (!uid || !cookie || !fb_dtsg || !lsd || !jazoest) {
+            alert('Todos os campos são obrigatórios!');
+            return;
         }
 
-        // Função para atualizar a lista de perfis
-        function atualizarListaPerfis() {
-            const lista = document.getElementById('perfisLista');
-            
-            if (perfisEmissores.length === 0) {
-                lista.innerHTML = '<p class="text-muted text-center">Nenhum perfil cadastrado</p>';
-                return;
-            }
+        // Verificar se UID já existe
+        if (perfisEmissores.some(p => p.uid === uid)) {
+            alert('Este UID já foi cadastrado!');
+            return;
+        }
 
-            lista.innerHTML = perfisEmissores.map((perfil, index) => `
-                <div class="perfil-card">
-                    <button class="btn-remove-perfil" onclick="removerPerfil(${index})">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <strong>UID:</strong><br>
-                            <code>${perfil.uid}</code>
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Cookie:</strong><br>
-                            <code>${perfil.cookie.substring(0, 50)}...</code>
-                        </div>
-                        <div class="col-md-2">
-                            <strong>fb_dtsg:</strong><br>
-                            <code>${perfil.fb_dtsg.substring(0, 20)}...</code>
-                        </div>
-                        <div class="col-md-2">
-                            <strong>LSD:</strong><br>
-                            <code>${perfil.lsd}</code>
-                        </div>
+        const perfil = { uid, cookie, fb_dtsg, lsd, jazoest };
+        perfisEmissores.push(perfil);
+
+        // Limpar formulário
+        document.getElementById('uid').value = '';
+        document.getElementById('cookie').value = '';
+        document.getElementById('fb_dtsg').value = '';
+        document.getElementById('lsd').value = '';
+        document.getElementById('jazoest').value = '';
+
+        atualizarListaPerfis();
+        atualizarContadores();
+    }
+
+    // Função para atualizar a lista de perfis
+    function atualizarListaPerfis() {
+        const lista = document.getElementById('perfisLista');
+        
+        if (perfisEmissores.length === 0) {
+            lista.innerHTML = '<p class="text-muted text-center">Nenhum perfil cadastrado</p>';
+            return;
+        }
+
+        lista.innerHTML = perfisEmissores.map((perfil, index) => `
+            <div class="perfil-card">
+                <button class="btn-remove-perfil" onclick="removerPerfil(${index})">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="row">
+                    <div class="col-md-2">
+                        <strong>UID:</strong>
+
+                        <code>${perfil.uid}</code>
                     </div>
-                    <div class="row mt-2">
-                        <div class="col-md-2">
-                            <strong>Jazoest:</strong><br>
-                            <code>${perfil.jazoest}</code>
-                        </div>
+                    <div class="col-md-6">
+                        <strong>Cookie:</strong>
+
+                        <code>${perfil.cookie.substring(0, 50)}...</code>
+                    </div>
+                    <div class="col-md-2">
+                        <strong>fb_dtsg:</strong>
+
+                        <code>${perfil.fb_dtsg.substring(0, 20)}...</code>
+                    </div>
+                    <div class="col-md-2">
+                        <strong>LSD:</strong>
+
+                        <code>${perfil.lsd}</code>
                     </div>
                 </div>
-            `).join('');
+                <div class="row mt-2">
+                    <div class="col-md-2">
+                        <strong>Jazoest:</strong>
+
+                        <code>${perfil.jazoest}</code>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+document.getElementById("selecionar-emissores").innerHTML = ''; // limpa anteriores
+perfisEmissores.forEach((perfil, index) => {
+    const checkbox = document.createElement('input');
+    checkbox.type = "checkbox";
+    checkbox.className = "form-check-input";
+    checkbox.id = `emissor_${index}`;
+    checkbox.value = index;
+    checkbox.checked = true; // por padrão, todos selecionados
+
+    const label = document.createElement('label');
+    label.className = "form-check-label ms-1";
+    label.htmlFor = checkbox.id;
+    label.textContent = perfil.label || perfil.uid;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = "form-check";
+    wrapper.appendChild(checkbox);
+    wrapper.appendChild(label);
+
+    document.getElementById("selecionar-emissores").appendChild(wrapper);
+});
+    }
+
+    // Função para remover perfil
+    function removerPerfil(index) {
+        perfisEmissores.splice(index, 1);
+        atualizarListaPerfis();
+        atualizarContadores();
+        salvarPerfisNoLocalStorage();
+    }
+
+    // Função para contar alvos
+    function contarAlvos() {
+        const texto = document.getElementById('alvos').value.trim();
+        
+        if (!texto) {
+            perfisAlvo = [];
+            atualizarContadores();
+            return;
         }
 
-        // Função para remover perfil
-        function removerPerfil(index) {
-            perfisEmissores.splice(index, 1);
+        // Separar por linha ou vírgula e limpar
+        perfisAlvo = texto
+            .split(/[\n,]/)
+            .map(uid => uid.trim())
+            .filter(uid => uid && uid.length > 0)
+            .slice(0, 50); // Limitar a 50
+
+        // Atualizar textarea se passou do limite
+        if (perfisAlvo.length === 50) {
+            document.getElementById('alvos').value = perfisAlvo.join('\n');
+        }
+
+        atualizarContadores();
+    }
+
+    // Função para atualizar contadores
+    function atualizarContadores() {
+        document.getElementById('emissorCounter').textContent = `${perfisEmissores.length}/50`;
+        document.getElementById('alvoCounter').textContent = `${perfisAlvo.length}/50`;
+        document.getElementById('countEmissores').textContent = perfisEmissores.length;
+        document.getElementById('countAlvos').textContent = perfisAlvo.length;
+        document.getElementById('totalRequests').textContent = perfisEmissores.length * perfisAlvo.length;
+    }
+
+    // Função para limpar perfis
+    function limparPerfis() {
+        if (confirm('Tem certeza que deseja limpar todos os perfis emissores?')) {
+            perfisEmissores = [];
             atualizarListaPerfis();
             atualizarContadores();
+            localStorage.removeItem('perfisEmissores');
             salvarPerfisNoLocalStorage();
         }
+    }
 
-        // Função para contar alvos
-        function contarAlvos() {
-            const texto = document.getElementById('alvos').value.trim();
-            
-            if (!texto) {
-                perfisAlvo = [];
-                atualizarContadores();
-                return;
-            }
-
-            // Separar por linha ou vírgula e limpar
-            perfisAlvo = texto
-                .split(/[\n,]/)
-                .map(uid => uid.trim())
-                .filter(uid => uid && uid.length > 0)
-                .slice(0, 50); // Limitar a 50
-
-            // Atualizar textarea se passou do limite
-            if (perfisAlvo.length === 50) {
-                document.getElementById('alvos').value = perfisAlvo.join('\n');
-            }
-
+    // Função para limpar alvos
+    function limparAlvos() {
+        if (confirm('Tem certeza que deseja limpar todos os alvos?')) {
+            document.getElementById('alvos').value = '';
+            perfisAlvo = [];
             atualizarContadores();
+            localStorage.removeItem('perfisAlvo');
+        }
+    }
+
+    // Função para exportar perfis
+    function exportarPerfis() {
+        if (perfisEmissores.length === 0) {
+            alert('Nenhum perfil para exportar!');
+            return;
         }
 
-        // Função para atualizar contadores
-        function atualizarContadores() {
-            document.getElementById('emissorCounter').textContent = `${perfisEmissores.length}/50`;
-            document.getElementById('alvoCounter').textContent = `${perfisAlvo.length}/50`;
-            document.getElementById('countEmissores').textContent = perfisEmissores.length;
-            document.getElementById('countAlvos').textContent = perfisAlvo.length;
-            document.getElementById('totalRequests').textContent = perfisEmissores.length * perfisAlvo.length;
-        }
+        const dados = {
+            perfis: perfisEmissores,
+            exportado_em: new Date().toISOString()
+        };
 
-        // Função para limpar perfis
-        function limparPerfis() {
-            if (confirm('Tem certeza que deseja limpar todos os perfis emissores?')) {
-                perfisEmissores = [];
-                atualizarListaPerfis();
-                atualizarContadores();
-                localStorage.removeItem('perfisEmissores');
-                salvarPerfisNoLocalStorage();
-            }
-        }
+        const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `perfis_facebook_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        
+        URL.revokeObjectURL(url);
+    }
 
-        // Função para limpar alvos
-        function limparAlvos() {
-            if (confirm('Tem certeza que deseja limpar todos os alvos?')) {
-                document.getElementById('alvos').value = '';
-                perfisAlvo = [];
-                atualizarContadores();
-                localStorage.removeItem('perfisAlvo');
-            }
-        }
+    // Função para importar perfis
+    function importarPerfis(event) {
+        const file = event.target.files[0];
+        if (!file) return;
 
-        // Função para exportar perfis
-        function exportarPerfis() {
-            if (perfisEmissores.length === 0) {
-                alert('Nenhum perfil para exportar!');
-                return;
-            }
-
-            const dados = {
-                perfis: perfisEmissores,
-                exportado_em: new Date().toISOString()
-            };
-
-            const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `perfis_facebook_${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            
-            URL.revokeObjectURL(url);
-        }
-
-        // Função para importar perfis
-        function importarPerfis(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const dados = JSON.parse(e.target.result);
-                    
-                    if (dados.perfis && Array.isArray(dados.perfis)) {
-                        // Confirmar importação
-                        if (confirm(`Importar ${dados.perfis.length} perfis? (Isso substituirá os perfis atuais)`)) {
-                            perfisEmissores = dados.perfis.slice(0, 30); // Limitar a 30
-                            atualizarListaPerfis();
-                            atualizarContadores();
-                            adicionarLog(`✅ ${perfisEmissores.length} perfis importados com sucesso!`);
-                            salvarPerfisNoLocalStorage();
-                        }
-                    } else {
-                        alert('Arquivo JSON inválido!');
-                    }
-                } catch (error) {
-                    alert('Erro ao ler arquivo: ' + error.message);
-                }
-            };
-            reader.readAsText(file);
-            
-            // Limpar input
-            event.target.value = '';
-        }
-
-        // Função para adicionar log
-        function adicionarLog(mensagem) {
-            const logs = document.getElementById('logs');
-            const timestamp = new Date().toLocaleTimeString('pt-BR');
-            logs.textContent += `[${timestamp}] ${mensagem}\n`;
-            logs.scrollTop = logs.scrollHeight;
-        }
-
-        // Função para limpar logs
-        function limparLogs() {
-            document.getElementById('logs').textContent = 'Logs limpos...\n';
-        }
-
-        // Função principal para enviar requisições
-        async function enviarRequisicoes() {
-            // Validações
-            if (perfisEmissores.length === 0) {
-                alert('Adicione pelo menos um perfil emissor!');
-                return;
-            }
-
-            if (perfisAlvo.length === 0) {
-                alert('Adicione pelo menos um perfil alvo!');
-                return;
-            }
-
-            const apiUrl = document.getElementById('apiUrl').value.trim();
-            if (!apiUrl) {
-                alert('Informe a URL da API!');
-                return;
-            }
-
-            // Preparar dados
-            const dados = {
-                emissores: perfisEmissores,
-                alvos: perfisAlvo
-            };
-
-            // Mostrar loading
-            document.getElementById('loading').classList.add('show');
-            document.getElementById('btnEnviar').disabled = true;
-            limparLogs();
-            adicionarLog(`🚀 Iniciando envio de ${perfisEmissores.length * perfisAlvo.length} solicitações...`);
-            adicionarLog(`📊 ${perfisEmissores.length} emissores → ${perfisAlvo.length} alvos`);
-
+        const reader = new FileReader();
+        reader.onload = function(e) {
             try {
-                const response = await fetch(apiUrl, {
+                const dados = JSON.parse(e.target.result);
+                
+                if (dados.perfis && Array.isArray(dados.perfis)) {
+                    // Confirmar importação
+                    if (confirm(`Importar ${dados.perfis.length} perfis? (Isso substituirá os perfis atuais)`)) {
+                        perfisEmissores = dados.perfis.slice(0, 50); // Limitar a 50
+                        atualizarListaPerfis();
+                        atualizarContadores();
+                        adicionarLog(` ${perfisEmissores.length} perfis importados com sucesso!`);
+                        salvarPerfisNoLocalStorage();
+                    }
+                } else {
+                    alert('Arquivo JSON inválido!');
+                }
+            } catch (error) {
+                alert('Erro ao ler arquivo: ' + error.message);
+            }
+        };
+        reader.readAsText(file);
+        
+        // Limpar input
+        event.target.value = '';
+    }
+
+    // Função para adicionar log
+    function adicionarLog(mensagem) {
+        const logs = document.getElementById('logs');
+        const timestamp = new Date().toLocaleTimeString('pt-BR');
+        logs.textContent += `[${timestamp}] ${mensagem}\n`;
+        logs.scrollTop = logs.scrollHeight;
+    }
+
+    // Função para limpar logs
+    function limparLogs() {
+        document.getElementById('logs').textContent = 'Logs limpos...\n';
+    }
+
+    // Função principal para enviar requisições
+    async function enviarRequisicoes() {
+        // Validações
+        if (perfisEmissores.length === 0) {
+            mostrarToast('Adicione pelo menos um perfil emissor!', 'error');
+            return;
+        }
+
+        if (perfisAlvo.length === 0) {
+            mostrarToast('Adicione pelo menos um perfil alvo!', 'error');
+            return;
+        }
+
+        const apiUrl = document.getElementById('apiUrl').value.trim();
+        if (!apiUrl) {
+            mostrarToast('Informe a URL da API!', 'error');
+            return;
+        }
+
+        // Validar URL
+        try {
+            new URL(apiUrl);
+        } catch {
+            mostrarToast('URL da API inválida!', 'error');
+            return;
+        }
+
+        // Preparar dados
+        const dados = {
+            emissores: perfisEmissores,
+            alvos: perfisAlvo
+        };
+
+        // Mostrar loading
+        document.getElementById('loading').classList.add('show');
+        document.getElementById('btnEnviar').disabled = true;
+        limparLogs();
+        
+        adicionarLog(` Iniciando envio de ${perfisEmissores.length * perfisAlvo.length} solicitações...`);
+        adicionarLog(` ${perfisEmissores.length} emissores → ${perfisAlvo.length} alvos`);
+        adicionarLog(` API: ${apiUrl}\n`);
+
+        try {
+            const resultado = await enviarComRetry(apiUrl, dados);
+
+            adicionarLog(' Requisição enviada com sucesso!');
+            adicionarLog(' Processando resultados...\n');
+
+            // Processar logs da resposta
+            if (resultado.logs && Array.isArray(resultado.logs)) {
+                resultado.logs.forEach(log => {
+                    adicionarLog(log);
+                });
+            }
+
+            // Mostrar resumo
+            if (resultado.resumo) {
+                adicionarLog('\n RESUMO FINAL:');
+                adicionarLog(` Sucessos: ${resultado.resumo.sucessos || 0}`);
+                adicionarLog(` Erros: ${resultado.resumo.erros || 0}`);
+                adicionarLog(` Taxa de sucesso: ${resultado.resumo.taxa_sucesso || '0%'}`);
+                
+                const sucessos = resultado.resumo.sucessos || 0;
+                const total = perfisEmissores.length * perfisAlvo.length;
+                
+                if (sucessos > 0) {
+                    mostrarToast(`${sucessos}/${total} solicitações enviadas com sucesso!`, 'success');
+                }
+            }
+
+            // Mostrar logs de erro detalhados
+            if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
+                resultado.errosDetalhados.forEach((err, i) => {
+                    adicionarLog(`ERRO ${i + 1}:`);
+                    adicionarLog(`Perfil: ${err.perfil}`);
+                    adicionarLog(`Alvo: ${err.alvo}`);
+                    adicionarLog(`Erro: ${typeof err.erro === 'string' ? err.erro : JSON.stringify(err.erro)}`);
+                    adicionarLog('---');
+                });
+            }
+
+            // Mostrar dados adicionais se houver
+            if (resultado.detalhes) {
+                adicionarLog('\n DETALHES ADICIONAIS:');
+                Object.entries(resultado.detalhes).forEach(([key, value]) => {
+                    adicionarLog(`${key}: ${value}`);
+                });
+            }
+
+        } catch (error) {
+            adicionarLog(` Erro de conexão: ${error.message}`);
+            mostrarToast(`Erro: ${error.message}`, 'error');
+            console.error('Erro:', error);
+        } finally {
+            // Esconder loading
+            document.getElementById('loading').classList.remove('show');
+            document.getElementById('btnEnviar').disabled = false;
+            adicionarLog('\n Processo finalizado.');
+        }
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        // Permitir adicionar perfil com Enter
+        ['uid', 'cookie', 'fb_dtsg', 'lsd', 'jazoest'].forEach(id => {
+            document.getElementById(id).addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    adicionarPerfil();
+                }
+            });
+        });
+
+        // Atualizar contadores iniciais
+        atualizarContadores();
+        adicionarLog(' Sistema iniciado! Pronto para uso.');
+    });
+
+    // Função para validar UID (apenas números)
+    function validarUID(uid) {
+        return /^\d+$/.test(uid) && uid.length >= 10;
+    }
+
+    // Melhorar validação do perfil
+    function adicionarPerfilMelhorado() {
+        if (perfisEmissores.length >= 50) {
+            alert('Máximo de 50 perfis emissores atingido!');
+            return;
+        }
+
+        const uid = document.getElementById('uid').value.trim();
+        const cookie = document.getElementById('cookie').value.trim();
+        const fb_dtsg = document.getElementById('fb_dtsg').value.trim();
+        const lsd = document.getElementById('lsd').value.trim();
+        const jazoest = document.getElementById('jazoest').value.trim();
+
+        // Validações específicas
+        if (!uid || !validarUID(uid)) {
+            alert('UID inválido! Deve conter apenas números e ter pelo menos 10 dígitos.');
+            return;
+        }
+
+        if (!cookie || !cookie.includes('c_user=')) {
+            alert('Cookie inválido! Deve conter pelo menos "c_user="');
+            return;
+        }
+
+        // Verificar se UID já existe
+        if (perfisEmissores.some(p => p.uid === uid)) {
+            alert('Este UID já foi cadastrado!');
+            return;
+        }
+
+        const perfil = { uid, cookie, fb_dtsg, lsd, jazoest, label: `Perfil ${perfisEmissores.length + 1}` };
+        perfisEmissores.push(perfil);
+
+        // Limpar formulário
+        document.getElementById('uid').value = '';
+        document.getElementById('cookie').value = '';
+        document.getElementById('fb_dtsg').value = '';
+        document.getElementById('lsd').value = '';
+        document.getElementById('jazoest').value = '';
+
+        atualizarListaPerfis();
+        atualizarContadores();
+        adicionarLog(` Perfil ${uid} adicionado com sucesso!`);
+        salvarPerfisNoLocalStorage();
+    }
+
+    // Substituir a função original
+    window.adicionarPerfil = adicionarPerfilMelhorado;
+
+    // Função para validar e processar alvos
+    function contarAlvosMelhorado() {
+        const texto = document.getElementById('alvos').value.trim();
+        
+        if (!texto) {
+            perfisAlvo = [];
+            atualizarContadores();
+            return;
+        }
+
+        // Separar por linha ou vírgula e limpar
+        let alvos = texto
+            .split(/[\n,]/)
+            .map(uid => uid.trim())
+            .filter(uid => uid && uid.length > 0);
+
+        // Validar UIDs
+        const alvosValidos = [];
+        const alvosInvalidos = [];
+
+        alvos.forEach(uid => {
+            if (validarUID(uid)) {
+                alvosValidos.push(uid);
+            } else {
+                alvosInvalidos.push(uid);
+            }
+        });
+
+        // Remover duplicatas
+        perfisAlvo = [...new Set(alvosValidos)].slice(0, 50);
+
+        // Feedback sobre alvos inválidos
+        if (alvosInvalidos.length > 0) {
+            console.warn('UIDs inválidos encontrados:', alvosInvalidos);
+            adicionarLog(` ${alvosInvalidos.length} UIDs inválidos foram ignorados`);
+        }
+
+        // Atualizar textarea apenas com alvos válidos
+        document.getElementById('alvos').value = perfisAlvo.join('\n');
+
+        atualizarContadores();
+        localStorage.setItem('perfisAlvo', JSON.stringify(perfisAlvo));
+    }
+
+    // Substituir função original
+    window.contarAlvos = contarAlvosMelhorado;
+
+    // Função para detectar Enter nos campos
+    function setupEnterKeyListeners() {
+        ['uid', 'cookie', 'fb_dtsg', 'lsd', 'jazoest'].forEach(id => {
+            document.getElementById(id).addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    adicionarPerfil();
+                }
+            });
+        });
+    }
+
+    // Função para mostrar toast de notificação
+    function mostrarToast(mensagem, tipo = 'info') {
+        const toastContainer = document.getElementById('toastContainer') || criarToastContainer();
+        
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center text-white bg-${tipo === 'success' ? 'success' : tipo === 'error' ? 'danger' : 'primary'} border-0`;
+        toast.setAttribute('role', 'alert');
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-${tipo === 'success' ? 'check-circle' : tipo === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                    ${mensagem}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        `;
+        
+        toastContainer.appendChild(toast);
+        
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+        
+        // Remover elemento após 5 segundos
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 5000);
+    }
+
+    function criarToastContainer() {
+        const container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '1055';
+        document.body.appendChild(container);
+        return container;
+    }
+
+    // Função melhorada para envio com retry
+    async function enviarComRetry(url, dados, tentativas = 3) {
+        for (let i = 0; i < tentativas; i++) {
+            try {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify(dados)
                 });
 
-                const resultado = await response.json();
-
-                if (response.ok) {
-                    adicionarLog('✅ Requisição enviada com sucesso!');
-                    adicionarLog('📋 Processando resultados...\n');
-
-                    // Processar logs da resposta
-                    if (resultado.logs && Array.isArray(resultado.logs)) {
-                        resultado.logs.forEach(log => {
-                            adicionarLog(log);
-                        });
-                    }
-
-                    // Mostrar resumo
-                    if (resultado.resumo) {
-                        adicionarLog('\n📊 RESUMO FINAL:');
-                        adicionarLog(`✅ Sucessos: ${resultado.resumo.sucessos || 0}`);
-                        adicionarLog(`❌ Erros: ${resultado.resumo.erros || 0}`);
-                        adicionarLog(`📈 Taxa de sucesso: ${resultado.resumo.taxa_sucesso || '0%'}`);
-                    }
-
-                } else {
-                    adicionarLog(`❌ Erro na API: ${resultado.error || 'Erro desconhecido'}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
 
+                return await response.json();
             } catch (error) {
-                adicionarLog(`❌ Erro de conexão: ${error.message}`);
-                console.error('Erro:', error);
-            } finally {
-                // Esconder loading
-                document.getElementById('loading').classList.remove('show');
-                document.getElementById('btnEnviar').disabled = false;
-                adicionarLog('\n🏁 Processo finalizado.');
+                if (i === tentativas - 1) throw error;
+                
+                adicionarLog(` Tentativa ${i + 1} falhou, tentando novamente...`);
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Aguardar 2s
             }
         }
+    }
 
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            // Permitir adicionar perfil com Enter
-            ['uid', 'cookie', 'fb_dtsg', 'lsd', 'jazoest'].forEach(id => {
-                document.getElementById(id).addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        adicionarPerfil();
-                    }
+function toggleTodosEmissores() {
+    const checkboxes = document.querySelectorAll("#selecionar-emissores input[type='checkbox']");
+    const allChecked = document.getElementById("checkAll").checked;
+    checkboxes.forEach(cb => cb.checked = allChecked);
+}
+
+    // Função principal melhorada para enviar requisições
+    async function enviarRequisicoes() {
+const emissoresSelecionados = [];
+document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked").forEach(cb => {
+    const index = parseInt(cb.value);
+    if (!isNaN(index)) {
+        emissoresSelecionados.push(perfisEmissores[index]);
+    }
+});
+        // Validações
+        if (emissoresSelecionados.length === 0) {
+            mostrarToast('Selecione pelo menos um perfil emissor!', 'error');
+            return;
+        }
+
+        if (perfisAlvo.length === 0) {
+            mostrarToast('Adicione pelo menos um perfil alvo!', 'error');
+            return;
+        }
+
+        const apiUrl = document.getElementById('apiUrl').value.trim();
+        if (!apiUrl) {
+            mostrarToast('Informe a URL da API!', 'error');
+            return;
+        }
+
+        // Validar URL
+        try {
+            new URL(apiUrl);
+        } catch {
+            mostrarToast('URL da API inválida!', 'error');
+            return;
+        }
+
+        // Preparar dados
+        const dados = {
+            emissores: emissoresSelecionados,
+            alvos: perfisAlvo
+        };
+
+        // Mostrar loading
+        document.getElementById('loading').classList.add('show');
+        document.getElementById('btnEnviar').disabled = true;
+        limparLogs();
+        
+        adicionarLog(` Iniciando envio de ${emissoresSelecionados.length * perfisAlvo.length} solicitações...`);
+        adicionarLog(` ${emissoresSelecionados.length} emissores → ${perfisAlvo.length} alvos`);
+        adicionarLog(` API: ${apiUrl}\n`);
+
+        try {
+            const resultado = await enviarComRetry(apiUrl, dados);
+
+            adicionarLog(' Requisição enviada com sucesso!');
+            adicionarLog(' Processando resultados...\n');
+
+            // Processar logs da resposta
+            if (resultado.logs && Array.isArray(resultado.logs)) {
+                resultado.logs.forEach(log => {
+                    adicionarLog(log);
                 });
-            });
-
-            // Atualizar contadores iniciais
-            atualizarContadores();
-            adicionarLog('🔥 Sistema iniciado! Pronto para uso.');
-        });
-
-        // Função para validar UID (apenas números)
-        function validarUID(uid) {
-            return /^\d+$/.test(uid) && uid.length >= 10;
-        }
-
-        // Melhorar validação do perfil
-        function adicionarPerfilMelhorado() {
-            if (perfisEmissores.length >= 50) {
-                alert('Máximo de 50 perfis emissores atingido!');
-                return;
             }
 
-            const uid = document.getElementById('uid').value.trim();
-            const cookie = document.getElementById('cookie').value.trim();
-            const fb_dtsg = document.getElementById('fb_dtsg').value.trim();
-            const lsd = document.getElementById('lsd').value.trim();
-            const jazoest = document.getElementById('jazoest').value.trim();
-
-            // Validações específicas
-            if (!uid || !validarUID(uid)) {
-                alert('UID inválido! Deve conter apenas números e ter pelo menos 10 dígitos.');
-                return;
-            }
-
-            if (!cookie || !cookie.includes('c_user=')) {
-                alert('Cookie inválido! Deve conter pelo menos "c_user="');
-                return;
-            }
-
-            // Verificar se UID já existe
-            if (perfisEmissores.some(p => p.uid === uid)) {
-                alert('Este UID já foi cadastrado!');
-                return;
-            }
-
-            const perfil = { uid, cookie, fb_dtsg, lsd, jazoest };
-            perfisEmissores.push(perfil);
-
-            // Limpar formulário
-            document.getElementById('uid').value = '';
-            document.getElementById('cookie').value = '';
-            document.getElementById('fb_dtsg').value = '';
-            document.getElementById('lsd').value = '';
-            document.getElementById('jazoest').value = '';
-
-            atualizarListaPerfis();
-            atualizarContadores();
-            adicionarLog(`✅ Perfil ${uid} adicionado com sucesso!`);
-            salvarPerfisNoLocalStorage();
-        }
-
-        // Substituir a função original
-        window.adicionarPerfil = adicionarPerfilMelhorado;
-
-        // Função para validar e processar alvos
-        function contarAlvosMelhorado() {
-            const texto = document.getElementById('alvos').value.trim();
-            
-            if (!texto) {
-                perfisAlvo = [];
-                atualizarContadores();
-                return;
-            }
-
-            // Separar por linha ou vírgula e limpar
-            let alvos = texto
-                .split(/[\n,]/)
-                .map(uid => uid.trim())
-                .filter(uid => uid && uid.length > 0);
-
-            // Validar UIDs
-            const alvosValidos = [];
-            const alvosInvalidos = [];
-
-            alvos.forEach(uid => {
-                if (validarUID(uid)) {
-                    alvosValidos.push(uid);
-                } else {
-                    alvosInvalidos.push(uid);
+            // Mostrar resumo
+            if (resultado.resumo) {
+                adicionarLog('\n RESUMO FINAL:');
+                adicionarLog(` Sucessos: ${resultado.resumo.sucessos || 0}`);
+                adicionarLog(` Erros: ${resultado.resumo.erros || 0}`);
+                adicionarLog(` Taxa de sucesso: ${resultado.resumo.taxa_sucesso || '0%'}`);
+                
+                const sucessos = resultado.resumo.sucessos || 0;
+                const total = emissoresSelecionados.length * perfisAlvo.length;
+                
+                if (sucessos > 0) {
+                    mostrarToast(`${sucessos}/${total} solicitações enviadas com sucesso!`, 'success');
                 }
-            });
-
-            // Remover duplicatas
-            perfisAlvo = [...new Set(alvosValidos)].slice(0, 50);
-
-            // Feedback sobre alvos inválidos
-            if (alvosInvalidos.length > 0) {
-                console.warn('UIDs inválidos encontrados:', alvosInvalidos);
-                adicionarLog(`⚠️ ${alvosInvalidos.length} UIDs inválidos foram ignorados`);
             }
+// Mostrar logs de erro detalhados
+if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
+    resultado.errosDetalhados.forEach((err, i) => {
+        adicionarLog(`ERRO ${i + 1}:`);
+        adicionarLog(`Perfil: ${err.perfil}`);
+        adicionarLog(`Alvo: ${err.alvo}`);
+        adicionarLog(`Erro: ${typeof err.erro === 'string' ? err.erro : JSON.stringify(err.erro)}`);
+        adicionarLog('---');
+    });
+}
 
-            // Atualizar textarea apenas com alvos válidos
-            document.getElementById('alvos').value = perfisAlvo.join('\n');
-
-            atualizarContadores();
-            localStorage.setItem('perfisAlvo', JSON.stringify(perfisAlvo));
-        }
-
-        // Substituir função original
-        window.contarAlvos = contarAlvosMelhorado;
-
-        // Função para detectar Enter nos campos
-        function setupEnterKeyListeners() {
-            ['uid', 'cookie', 'fb_dtsg', 'lsd', 'jazoest'].forEach(id => {
-                document.getElementById(id).addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        adicionarPerfil();
-                    }
+            // Mostrar dados adicionais se houver
+            if (resultado.detalhes) {
+                adicionarLog('\n DETALHES ADICIONAIS:');
+                Object.entries(resultado.detalhes).forEach(([key, value]) => {
+                    adicionarLog(`${key}: ${value}`);
                 });
-            });
+            }
+
+        } catch (error) {
+            adicionarLog(` Erro de conexão: ${error.message}`);
+            mostrarToast(`Erro: ${error.message}`, 'error');
+            console.error('Erro:', error);
+        } finally {
+            // Esconder loading
+            document.getElementById('loading').classList.remove('show');
+            document.getElementById('btnEnviar').disabled = false;
+            adicionarLog('\n Processo finalizado.');
         }
+    }
 
-        // Função para mostrar toast de notificação
-        function mostrarToast(mensagem, tipo = 'info') {
-            const toastContainer = document.getElementById('toastContainer') || criarToastContainer();
-            
-            const toast = document.createElement('div');
-            toast.className = `toast align-items-center text-white bg-${tipo === 'success' ? 'success' : tipo === 'error' ? 'danger' : 'primary'} border-0`;
-            toast.setAttribute('role', 'alert');
-            toast.innerHTML = `
-                <div class="d-flex">
-                    <div class="toast-body">
-                        <i class="fas fa-${tipo === 'success' ? 'check-circle' : tipo === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
-                        ${mensagem}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-            `;
-            
-            toastContainer.appendChild(toast);
-            
-            const bsToast = new bootstrap.Toast(toast);
-            bsToast.show();
-            
-            // Remover elemento após 5 segundos
-            setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.remove();
-                }
-            }, 5000);
-        }
-
-        function criarToastContainer() {
-            const container = document.createElement('div');
-            container.id = 'toastContainer';
-            container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-            container.style.zIndex = '1055';
-            document.body.appendChild(container);
-            return container;
-        }
-
-        // Função melhorada para envio com retry
-        async function enviarComRetry(url, dados, tentativas = 3) {
-            for (let i = 0; i < tentativas; i++) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify(dados)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-
-                    return await response.json();
-                } catch (error) {
-                    if (i === tentativas - 1) throw error;
-                    
-                    adicionarLog(`⚠️ Tentativa ${i + 1} falhou, tentando novamente...`);
-                    await new Promise(resolve => setTimeout(resolve, 2000)); // Aguardar 2s
-                }
-            }
-        }
-
-        // Função principal melhorada para enviar requisições
-        async function enviarRequisicoes() {
-            // Validações
-            if (perfisEmissores.length === 0) {
-                mostrarToast('Adicione pelo menos um perfil emissor!', 'error');
-                return;
-            }
-
-            if (perfisAlvo.length === 0) {
-                mostrarToast('Adicione pelo menos um perfil alvo!', 'error');
-                return;
-            }
-
-            const apiUrl = document.getElementById('apiUrl').value.trim();
-            if (!apiUrl) {
-                mostrarToast('Informe a URL da API!', 'error');
-                return;
-            }
-
-            // Validar URL
-            try {
-                new URL(apiUrl);
-            } catch {
-                mostrarToast('URL da API inválida!', 'error');
-                return;
-            }
-
-            // Preparar dados
-            const dados = {
-                emissores: perfisEmissores,
-                alvos: perfisAlvo
-            };
-
-            // Mostrar loading
-            document.getElementById('loading').classList.add('show');
-            document.getElementById('btnEnviar').disabled = true;
-            limparLogs();
-            
-            adicionarLog(`🚀 Iniciando envio de ${perfisEmissores.length * perfisAlvo.length} solicitações...`);
-            adicionarLog(`📊 ${perfisEmissores.length} emissores → ${perfisAlvo.length} alvos`);
-            adicionarLog(`🌐 API: ${apiUrl}\n`);
-
-            try {
-                const resultado = await enviarComRetry(apiUrl, dados);
-
-                adicionarLog('✅ Requisição enviada com sucesso!');
-                adicionarLog('📋 Processando resultados...\n');
-
-                // Processar logs da resposta
-                if (resultado.logs && Array.isArray(resultado.logs)) {
-                    resultado.logs.forEach(log => {
-                        adicionarLog(log);
-                    });
-                }
-
-                // Mostrar resumo
-                if (resultado.resumo) {
-                    adicionarLog('\n📊 RESUMO FINAL:');
-                    adicionarLog(`✅ Sucessos: ${resultado.resumo.sucessos || 0}`);
-                    adicionarLog(`❌ Erros: ${resultado.resumo.erros || 0}`);
-                    adicionarLog(`📈 Taxa de sucesso: ${resultado.resumo.taxa_sucesso || '0%'}`);
-                    
-                    const sucessos = resultado.resumo.sucessos || 0;
-                    const total = perfisEmissores.length * perfisAlvo.length;
-                    
-                    if (sucessos > 0) {
-                        mostrarToast(`${sucessos}/${total} solicitações enviadas com sucesso!`, 'success');
-                    }
-                }
-
-                // Mostrar dados adicionais se houver
-                if (resultado.detalhes) {
-                    adicionarLog('\n📝 DETALHES ADICIONAIS:');
-                    Object.entries(resultado.detalhes).forEach(([key, value]) => {
-                        adicionarLog(`${key}: ${value}`);
-                    });
-                }
-
-            } catch (error) {
-                adicionarLog(`❌ Erro de conexão: ${error.message}`);
-                mostrarToast(`Erro: ${error.message}`, 'error');
-                console.error('Erro:', error);
-            } finally {
-                // Esconder loading
-                document.getElementById('loading').classList.remove('show');
-                document.getElementById('btnEnviar').disabled = false;
-                adicionarLog('\n🏁 Processo finalizado.');
-            }
-        }
-
-        // Função para validar URL da API
-        function validarApiUrl() {
-            const apiUrl = document.getElementById('apiUrl').value.trim();
-            const input = document.getElementById('apiUrl');
-            
-            try {
-                const url = new URL(apiUrl);
-                if (url.protocol !== 'https:') {
-                    input.classList.add('is-invalid');
-                    return false;
-                }
-                input.classList.remove('is-invalid');
-                input.classList.add('is-valid');
-                return true;
-            } catch {
+    // Função para validar URL da API
+    function validarApiUrl() {
+        const apiUrl = document.getElementById('apiUrl').value.trim();
+        const input = document.getElementById('apiUrl');
+        
+        try {
+            const url = new URL(apiUrl);
+            if (url.protocol !== 'https:') {
                 input.classList.add('is-invalid');
                 return false;
             }
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+            return true;
+        } catch {
+            input.classList.add('is-invalid');
+            return false;
         }
+    }
 
-        // Event listener para validação da URL em tempo real
-        document.addEventListener('DOMContentLoaded', function() {
-            const perfisSalvos = localStorage.getItem('perfisEmissores');
-            if (perfisSalvos) {
-                perfisEmissores = JSON.parse(perfisSalvos);
-                atualizarListaPerfis();
-                atualizarContadores();
-                adicionarLog(`📁 ${perfisEmissores.length} perfis carregados do armazenamento local.`);
-            }
-            const alvosSalvos = localStorage.getItem('perfisAlvo');
-            if (alvosSalvos) {
-                perfisAlvo = JSON.parse(alvosSalvos);
-                document.getElementById('alvos').value = perfisAlvo.join('\n');
-                atualizarContadores();
-                adicionarLog(`🎯 ${perfisAlvo.length} alvos carregados do armazenamento local.`);
-            }
-            setupEnterKeyListeners();
+    // Event listener para validação da URL em tempo real
+    document.addEventListener('DOMContentLoaded', function() {
+        const perfisSalvos = localStorage.getItem('perfisEmissores');
+        if (perfisSalvos) {
+            perfisEmissores = JSON.parse(perfisSalvos);
+            atualizarListaPerfis();
             atualizarContadores();
-            adicionarLog('🔥 Sistema iniciado! Pronto para uso.');
+            adicionarLog(` ${perfisEmissores.length} perfis carregados do armazenamento local.`);
+        }
+        const alvosSalvos = localStorage.getItem('perfisAlvo');
+        if (alvosSalvos) {
+            perfisAlvo = JSON.parse(alvosSalvos);
+            document.getElementById('alvos').value = perfisAlvo.join('\n');
+            atualizarContadores();
+            adicionarLog(` ${perfisAlvo.length} alvos carregados do armazenamento local.`);
+        }
+        setupEnterKeyListeners();
+        atualizarContadores();
+        adicionarLog(' Sistema iniciado! Pronto para uso.');
 
-            // Validação da URL da API
-            document.getElementById('apiUrl').addEventListener('input', validarApiUrl);
-            
-            // Adicionar placeholder melhorado para alvos
-            const alvosTextarea = document.getElementById('alvos');
-            alvosTextarea.addEventListener('paste', function(e) {
-                setTimeout(() => {
-                    contarAlvos();
-                    mostrarToast('UIDs colados! Verificando formato...', 'info');
-                }, 100);
-            });
+        // Validação da URL da API
+        document.getElementById('apiUrl').addEventListener('input', validarApiUrl);
+        
+        // Adicionar placeholder melhorado para alvos
+        const alvosTextarea = document.getElementById('alvos');
+        alvosTextarea.addEventListener('paste', function(e) {
+            setTimeout(() => {
+                contarAlvos();
+                mostrarToast('UIDs colados! Verificando formato...', 'info');
+            }, 100);
         });
+    });
 
-        // Função para testar conexão com a API
-        async function testarConexao() {
-            const apiUrl = document.getElementById('apiUrl').value.trim();
-            
-            if (!validarApiUrl()) {
-                mostrarToast('URL inválida!', 'error');
-                return;
-            }
-
-            try {
-                adicionarLog('🔍 Testando conexão com a API...');
-                
-                const response = await fetch(apiUrl.replace('/api/send-requests', '/api/health'), {
-                    method: 'GET'
-                });
-
-                if (response.ok) {
-                    adicionarLog('✅ Conexão com API estabelecida com sucesso!');
-                    mostrarToast('API conectada!', 'success');
-                } else {
-                    adicionarLog('⚠️ API respondeu mas pode estar com problemas');
-                    mostrarToast('API respondeu mas pode estar com problemas', 'warning');
-                }
-            } catch (error) {
-                adicionarLog(`❌ Falha na conexão: ${error.message}`);
-                mostrarToast('Falha na conexão com a API', 'error');
-            }
+    // Função para testar conexão com a API
+    async function testarConexao() {
+        const apiUrl = document.getElementById('apiUrl').value.trim();
+        
+        if (!validarApiUrl()) {
+            mostrarToast('URL inválida!', 'error');
+            return;
         }
 
-        // Função para gerar relatório
-        function gerarRelatorio() {
-            if (perfisEmissores.length === 0 && perfisAlvo.length === 0) {
-                mostrarToast('Nenhum dado para gerar relatório!', 'error');
-                return;
+        try {
+            adicionarLog(' Testando conexão com a API...');
+            
+            const response = await fetch(apiUrl.replace('/api/send-requests', '/api/health'), {
+                method: 'GET'
+            });
+
+            if (response.ok) {
+                adicionarLog(' Conexão com API estabelecida com sucesso!');
+                mostrarToast('API conectada!', 'success');
+            } else {
+                adicionarLog(' API respondeu mas pode estar com problemas');
+                mostrarToast('API respondeu mas pode estar com problemas', 'warning');
             }
-
-            const relatorio = {
-                timestamp: new Date().toISOString(),
-                perfis_emissores: perfisEmissores.length,
-                perfis_alvo: perfisAlvo.length,
-                total_requests_possiveis: perfisEmissores.length * perfisAlvo.length,
-                detalhes: {
-                    emissores: perfisEmissores.map(p => ({ uid: p.uid })),
-                    alvos: perfisAlvo
-                }
-            };
-
-            const blob = new Blob([JSON.stringify(relatorio, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `relatorio_facebook_${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            
-            URL.revokeObjectURL(url);
-            mostrarToast('Relatório baixado!', 'success');
+        } catch (error) {
+            adicionarLog(` Falha na conexão: ${error.message}`);
+            mostrarToast('Falha na conexão com a API', 'error');
         }
-    </script>
-</body>
+    }
+
+    // Função para gerar relatório
+    function gerarRelatorio() {
+        if (perfisEmissores.length === 0 && perfisAlvo.length === 0) {
+            mostrarToast('Nenhum dado para gerar relatório!', 'error');
+            return;
+        }
+
+        const relatorio = {
+            timestamp: new Date().toISOString(),
+            perfis_emissores: perfisEmissores.length,
+            perfis_alvo: perfisAlvo.length,
+            total_requests_possiveis: perfisEmissores.length * perfisAlvo.length,
+            detalhes: {
+                emissores: perfisEmissores.map(p => ({ uid: p.uid })),
+                alvos: perfisAlvo
+            }
+        };
+
+        const blob = new Blob([JSON.stringify(relatorio, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `relatorio_facebook_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        
+        URL.revokeObjectURL(url);
+        mostrarToast('Relatório baixado!', 'success');
+    }
+function importarViaTexto() {
+    const texto = document.getElementById('importacaoRapida').value.trim();
+    if (!texto) {
+        mostrarToast('Campo vazio!', 'error');
+        return;
+    }const blocos = texto.split(/perfil\s+\d+/i).map(b => b.trim()).filter(b => b);
+
+let perfisImportados = 0;
+
+blocos.forEach((bloco, index) => {
+    const linhas = bloco.split('\n').map(l => l.trim()).filter(l => l);
+
+    if (linhas.length < 2) return;
+
+    const uidMatch = linhas.find(l => /^\d{10,}$/.test(l));
+    const cookieMatch = linhas.find(l => l.includes("c_user="));
+
+    if (!uidMatch || !cookieMatch) return;
+
+    const uid = uidMatch;
+    const cookie = cookieMatch;
+
+    if (perfisEmissores.some(p => p.uid === uid)) return; // já existe
+
+    // Extrair tokens (opcional — o backend já busca se estiverem vazios)
+    const perfil = {
+        uid,
+        cookie,
+        fb_dtsg: "",
+        lsd: "",
+        jazoest: "",
+        label: `Perfil ${index + 1}`
+    };
+
+    perfisEmissores.push(perfil);
+    perfisImportados++;
+});
+
+atualizarListaPerfis();
+atualizarContadores();
+salvarPerfisNoLocalStorage();
+
+mostrarToast(` ${perfisImportados} perfis importados via texto!`, 'success');
+adicionarLog(` Importação rápida: ${perfisImportados} perfis adicionados via campo de texto.`);}
+</script></body>
 </html>
