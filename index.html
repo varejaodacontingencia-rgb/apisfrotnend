@@ -954,217 +954,221 @@ function toggleTodosEmissores() {
     checkboxes.forEach(cb => cb.checked = allChecked);
 }
 
-    // Função principal melhorada para enviar requisições
-    async function enviarRequisicoes() {
-const emissoresSelecionados = [];
-document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked").forEach(cb => {
-    const index = parseInt(cb.value);
-    if (!isNaN(index)) {
-        emissoresSelecionados.push(perfisEmissores[index]);
-    }
-});
-        // Validações
-        if (emissoresSelecionados.length === 0) {
-            mostrarToast('Selecione pelo menos um perfil emissor!', 'error');
-            return;
-        }
-
-        if (perfisAlvo.length === 0) {
-            mostrarToast('Adicione pelo menos um perfil alvo!', 'error');
-            return;
-        }
-
-        const apiUrl = document.getElementById('apiUrl').value.trim();
-        if (!apiUrl) {
-            mostrarToast('Informe a URL da API!', 'error');
-            return;
-        }
-
-        // Validar URL
-        try {
-            new URL(apiUrl);
-        } catch {
-            mostrarToast('URL da API inválida!', 'error');
-            return;
-        }
-
-        // Preparar dados
-        const dados = {
-            emissores: emissoresSelecionados,
-            alvos: perfisAlvo
-        };
-
-        // Mostrar loading
-        document.getElementById('loading').classList.add('show');
-        document.getElementById('btnEnviar').disabled = true;
-        limparLogs();
-        
-        adicionarLog(` Iniciando envio de ${emissoresSelecionados.length * perfisAlvo.length} solicitações...`);
-        adicionarLog(` ${emissoresSelecionados.length} emissores → ${perfisAlvo.length} alvos`);
-        adicionarLog(` API: ${apiUrl}\n`);
-
-        try {
-            const resultado = await enviarComRetry(apiUrl, dados);
-
-            adicionarLog(' Requisição enviada com sucesso!');
-            adicionarLog(' Processando resultados...\n');
-
-            // Processar logs da resposta
-if (resultado.logs && Array.isArray(resultado.logs)) {
-    const perfisBloqueados = new Set();
-    resultado.logs.forEach(log => {
-        const emissor = log.emissor;
-        const alvo = log.alvo;
-        const friendRequest = log.results.friendRequest;
-
-        // Verificar se há checkpoint mesmo com success=true
-        if (friendRequest && friendRequest.success) {
-            let hasCheckpoint = false;
-            
-            // Verificar se data é uma string e contém padrão específico de checkpoint
-            if (typeof friendRequest.data === 'string') {
-                // Padrão mais específico para detectar checkpoint real
-                // Verifica se contém a estrutura típica de redirecionamento de checkpoint
-                if (friendRequest.data.includes('checkpoint') && 
-                    (friendRequest.data.includes('redirectPageTo') || 
-                     friendRequest.data.includes('ServerRedirect'))) {
-                    hasCheckpoint = true;
-                }
-            }
-            // Verificar se data é um objeto e contém a propriedade 'checkpoint' em qualquer nível
-            else if (typeof friendRequest.data === 'object' && friendRequest.data !== null) {
-                // Verificar se é um objeto de checkpoint real (não apenas contém a string em algum lugar)
-                const dataString = JSON.stringify(friendRequest.data);
-                
-                // Padrão mais específico para checkpoint em objetos
-                if ((dataString.includes('"checkpoint"') || dataString.includes('/checkpoint/')) &&
-                    (dataString.includes('redirectPageTo') || dataString.includes('ServerRedirect'))) {
-                    hasCheckpoint = true;
-                }
-            }
-
-            if (hasCheckpoint) {
-                // Este é o caso de checkpoint que precisa ser tratado como erro
-                adicionarLog(` ERRO: Perfil ${emissor} encontrou checkpoint ao enviar para ${alvo}`);
-                
-                // Adicionar também ao console para logs técnicos
-                console.error(`Checkpoint detectado para emissor ${emissor} e alvo ${alvo}`);
-                
-                // Marcar perfil como problemático
-                perfisBloqueados.add(emissor);
-                const index = perfisEmissores.findIndex(p => p.uid === emissor);
-                if (index !== -1) {
-                    const checkbox = document.querySelector(`#emissor_${index}`);
-                    if (checkbox) {
-                        checkbox.checked = false;
-                    }
-                }
-                
-                mostrarToast(`Perfil ${emissor}: Erro de checkpoint detectado`, "warning");
-            } 
-            else if (friendRequest.data && friendRequest.data.errors) {
-                const erros = friendRequest.data.errors;
-
-                erros.forEach(err => {
-                    const resumo = err.summary || "Erro desconhecido";
-                    const descricao = err.description || "";
-                    const codigo = err.api_error_code || err.code || "sem código";
-
-                    // Mostrar no log e notificação do frontend
-                    adicionarLog(` AVISO PARA PERFIL ${emissor}`);
-                    adicionarLog(`Erro ${codigo}: ${resumo}`);
-                    adicionarLog(`Descrição: ${descricao}\n`);
-
-                    mostrarToast(`Perfil ${emissor}: ${resumo}`, "warning");
-                });
-                perfisBloqueados.add(emissor);
-                const index = perfisEmissores.findIndex(p => p.uid === emissor);
-                if (index !== -1) {
-                    const checkbox = document.querySelector(`#emissor_${index}`);
-                    if (checkbox) {
-                        checkbox.checked = false;
-                    }
-                }
-            } 
-            else {
-                adicionarLog(` Perfil ${emissor} enviou para ${alvo} com sucesso.`);
-            }
-        } 
-        else if (friendRequest && friendRequest.data && friendRequest.data.errors) {
-            const erros = friendRequest.data.errors;
-
-            erros.forEach(err => {
-                const resumo = err.summary || "Erro desconhecido";
-                const descricao = err.description || "";
-                const codigo = err.api_error_code || err.code || "sem código";
-
-                // Mostrar no log e notificação do frontend
-                adicionarLog(` AVISO PARA PERFIL ${emissor}`);
-                adicionarLog(`Erro ${codigo}: ${resumo}`);
-                adicionarLog(`Descrição: ${descricao}\n`);
-
-                mostrarToast(`Perfil ${emissor}: ${resumo}`, "warning");
-            });
-            perfisBloqueados.add(emissor);
-            const index = perfisEmissores.findIndex(p => p.uid === emissor);
-            if (index !== -1) {
-                const checkbox = document.querySelector(`#emissor_${index}`);
-                if (checkbox) {
-                    checkbox.checked = false;
-                }
-            }
-        } 
-        else {
-            adicionarLog(` Perfil ${emissor} enviou para ${alvo} com sucesso.`);
+    // Função principal melhorada para enviar requisições em blocos sequenciais
+async function enviarRequisicoes() {
+    const emissoresSelecionados = [];
+    document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked").forEach(cb => {
+        const index = parseInt(cb.value);
+        if (!isNaN(index)) {
+            emissoresSelecionados.push(perfisEmissores[index]);
         }
     });
-}
-            
 
-            // Mostrar resumo
-            if (resultado.resumo) {
-                adicionarLog('\n RESUMO FINAL:');
-                adicionarLog(` Sucessos: ${resultado.resumo.sucessos || 0}`);
-                adicionarLog(` Erros: ${resultado.resumo.erros || 0}`);
-                adicionarLog(` Taxa de sucesso: ${resultado.resumo.taxa_sucesso || '0%'}`);
+    // Validações
+    if (emissoresSelecionados.length === 0) {
+        mostrarToast('Selecione pelo menos um perfil emissor!', 'error');
+        return;
+    }
+
+    if (perfisAlvo.length === 0) {
+        mostrarToast('Adicione pelo menos um perfil alvo!', 'error');
+        return;
+    }
+
+    const apiUrl = document.getElementById('apiUrl').value.trim();
+    if (!apiUrl) {
+        mostrarToast('Informe a URL da API!', 'error');
+        return;
+    }
+
+    // Validar URL
+    try {
+        new URL(apiUrl);
+    } catch {
+        mostrarToast('URL da API inválida!', 'error');
+        return;
+    }
+
+    // Mostrar loading
+    document.getElementById('loading').classList.add('show');
+    document.getElementById('btnEnviar').disabled = true;
+    limparLogs();
+    
+    adicionarLog(` Iniciando envio de ${emissoresSelecionados.length * perfisAlvo.length} solicitações...`);
+    adicionarLog(` ${emissoresSelecionados.length} emissores → ${perfisAlvo.length} alvos`);
+    adicionarLog(` API: ${apiUrl}\n`);
+    adicionarLog(` Modo: Processamento sequencial por alvo (blocos de 2 emissores)\n`);
+
+    try {
+        // Para cada alvo, processar todos os emissores em blocos
+        for (let alvoIndex = 0; alvoIndex < perfisAlvo.length; alvoIndex++) {
+            const alvo = perfisAlvo[alvoIndex];
+            adicionarLog(`\n--- PROCESSANDO ALVO ${alvoIndex + 1}/${perfisAlvo.length}: ${alvo} ---`);
+            
+            // Dividir emissores em blocos de 2
+            const blocos = [];
+            for (let i = 0; i < emissoresSelecionados.length; i += 2) {
+                blocos.push(emissoresSelecionados.slice(i, i + 2));
+            }
+            
+            // Processar cada bloco para este alvo
+            for (let blocoIndex = 0; blocoIndex < blocos.length; blocoIndex++) {
+                const blocoEmissores = blocos[blocoIndex];
+                adicionarLog(` Enviando bloco ${blocoIndex + 1}/${blocos.length} para alvo ${alvo}`);
                 
-                const sucessos = resultado.resumo.sucessos || 0;
-                const total = emissoresSelecionados.length * perfisAlvo.length;
-                
-                if (sucessos > 0) {
-                    mostrarToast(`${sucessos}/${total} solicitações enviadas com sucesso!`, 'success');
+                const dados = {
+                    emissores: blocoEmissores,
+                    alvos: [alvo] // Apenas um alvo por vez
+                };
+
+                const resultado = await enviarComRetry(apiUrl, dados);
+
+                adicionarLog(` Processando resultados do bloco ${blocoIndex + 1}...`);
+
+                // Processar logs da resposta
+                if (resultado.logs && Array.isArray(resultado.logs)) {
+                    const perfisBloqueados = new Set();
+                    resultado.logs.forEach(log => {
+                        const emissor = log.emissor;
+                        const alvoLog = log.alvo;
+                        const friendRequest = log.results.friendRequest;
+
+                        // Verificar se há checkpoint mesmo com success=true
+                        if (friendRequest && friendRequest.success) {
+                            let hasCheckpoint = false;
+                            
+                            // Verificar se data é uma string e contém padrão específico de checkpoint
+                            if (typeof friendRequest.data === 'string') {
+                                // Padrão mais específico para detectar checkpoint real
+                                if (friendRequest.data.includes('checkpoint') && 
+                                    (friendRequest.data.includes('redirectPageTo') || 
+                                     friendRequest.data.includes('ServerRedirect'))) {
+                                    hasCheckpoint = true;
+                                }
+                            }
+                            // Verificar se data é um objeto e contém a propriedade 'checkpoint' em qualquer nível
+                            else if (typeof friendRequest.data === 'object' && friendRequest.data !== null) {
+                                // Verificar se é um objeto de checkpoint real
+                                const dataString = JSON.stringify(friendRequest.data);
+                                
+                                // Padrão mais específico para checkpoint em objetos
+                                if ((dataString.includes('"checkpoint"') || dataString.includes('/checkpoint/')) &&
+                                    (dataString.includes('redirectPageTo') || dataString.includes('ServerRedirect'))) {
+                                    hasCheckpoint = true;
+                                }
+                            }
+
+                            if (hasCheckpoint) {
+                                // Este é o caso de checkpoint que precisa ser tratado como erro
+                                adicionarLog(` ERRO: Perfil ${emissor} encontrou checkpoint ao enviar para ${alvoLog}`);
+                                
+                                // Adicionar também ao console para logs técnicos
+                                console.error(`Checkpoint detectado para emissor ${emissor} e alvo ${alvoLog}`);
+                                
+                                // Marcar perfil como problemático
+                                perfisBloqueados.add(emissor);
+                                const index = perfisEmissores.findIndex(p => p.uid === emissor);
+                                if (index !== -1) {
+                                    const checkbox = document.querySelector(`#emissor_${index}`);
+                                    if (checkbox) {
+                                        checkbox.checked = false;
+                                    }
+                                }
+                                
+                                mostrarToast(`Perfil ${emissor}: Erro de checkpoint detectado`, "warning");
+                            } 
+                            else if (friendRequest.data && friendRequest.data.errors) {
+                                const erros = friendRequest.data.errors;
+
+                                erros.forEach(err => {
+                                    const resumo = err.summary || "Erro desconhecido";
+                                    const descricao = err.description || "";
+                                    const codigo = err.api_error_code || err.code || "sem código";
+
+                                    // Mostrar no log e notificação do frontend
+                                    adicionarLog(` AVISO PARA PERFIL ${emissor}`);
+                                    adicionarLog(`Erro ${codigo}: ${resumo}`);
+                                    adicionarLog(`Descrição: ${descricao}\n`);
+
+                                    mostrarToast(`Perfil ${emissor}: ${resumo}`, "warning");
+                                });
+                                perfisBloqueados.add(emissor);
+                                const index = perfisEmissores.findIndex(p => p.uid === emissor);
+                                if (index !== -1) {
+                                    const checkbox = document.querySelector(`#emissor_${index}`);
+                                    if (checkbox) {
+                                        checkbox.checked = false;
+                                    }
+                                }
+                            } 
+                            else {
+                                adicionarLog(` Perfil ${emissor} enviou para ${alvoLog} com sucesso.`);
+                            }
+                        } 
+                        else if (friendRequest && friendRequest.data && friendRequest.data.errors) {
+                            const erros = friendRequest.data.errors;
+
+                            erros.forEach(err => {
+                                const resumo = err.summary || "Erro desconhecido";
+                                const descricao = err.description || "";
+                                const codigo = err.api_error_code || err.code || "sem código";
+
+                                // Mostrar no log e notificação do frontend
+                                adicionarLog(` AVISO PARA PERFIL ${emissor}`);
+                                adicionarLog(`Erro ${codigo}: ${resumo}`);
+                                adicionarLog(`Descrição: ${descricao}\n`);
+
+                                mostrarToast(`Perfil ${emissor}: ${resumo}`, "warning");
+                            });
+                            perfisBloqueados.add(emissor);
+                            const index = perfisEmissores.findIndex(p => p.uid === emissor);
+                            if (index !== -1) {
+                                const checkbox = document.querySelector(`#emissor_${index}`);
+                                if (checkbox) {
+                                    checkbox.checked = false;
+                                }
+                            }
+                        } 
+                        else {
+                            adicionarLog(` Perfil ${emissor} enviou para ${alvoLog} com sucesso.`);
+                        }
+                    });
+                }
+
+                // Mostrar resumo do bloco
+                if (resultado.resumo) {
+                    adicionarLog(` Bloco ${blocoIndex + 1}: ${resultado.resumo.sucessos || 0} sucessos, ${resultado.resumo.erros || 0} erros`);
+                }
+
+                // Esperar entre blocos (exceto após o último bloco)
+                if (blocoIndex < blocos.length - 1) {
+                    adicionarLog(` Aguardando 2 segundos antes do próximo bloco...`);
+                    await new Promise(resolve => setTimeout(resolve, 2000)); // 2 segundos
                 }
             }
-// Mostrar logs de erro detalhados
-if (resultado.errosDetalhados && Array.isArray(resultado.errosDetalhados)) {
-    resultado.errosDetalhados.forEach((err, i) => {
-        adicionarLog(`ERRO ${i + 1}:`);
-        adicionarLog(`Perfil: ${err.perfil}`);
-        adicionarLog(`Alvo: ${err.alvo}`);
-        adicionarLog(`Erro: ${typeof err.erro === 'string' ? err.erro : JSON.stringify(err.erro)}`);
-        adicionarLog('---');
-    });
-}
-
-            // Mostrar dados adicionais se houver
-            if (resultado.detalhes) {
-                adicionarLog('\n DETALHES ADICIONAIS:');
-                Object.entries(resultado.detalhes).forEach(([key, value]) => {
-                    adicionarLog(`${key}: ${value}`);
-                });
+            
+            adicionarLog(` Concluído processamento do alvo ${alvo}`);
+            
+            // Esperar entre alvos (exceto após o último alvo)
+            if (alvoIndex < perfisAlvo.length - 1) {
+                adicionarLog(` Aguardando 3 segundos antes do próximo alvo...\n`);
+                await new Promise(resolve => setTimeout(resolve, 3000)); // 3 segundos
             }
-
-        } catch (error) {
-            adicionarLog(` Erro de conexão: ${error.message}`);
-            mostrarToast(`Erro: ${error.message}`, 'error');
-            console.error('Erro:', error);
-        } finally {
-            // Esconder loading
-            document.getElementById('loading').classList.remove('show');
-            document.getElementById('btnEnviar').disabled = false;
-            adicionarLog('\n Processo finalizado.');
         }
+
+        adicionarLog('\n PROCESSO FINALIZADO: Todos os alvos processados.');
+        mostrarToast('Todas as solicitações foram processadas!', 'success');
+
+    } catch (error) {
+        adicionarLog(` Erro de conexão: ${error.message}`);
+        mostrarToast(`Erro: ${error.message}`, 'error');
+        console.error('Erro:', error);
+    } finally {
+        // Esconder loading
+        document.getElementById('loading').classList.remove('show');
+        document.getElementById('btnEnviar').disabled = false;
     }
+}
 
     // Função para validar URL da API
     function validarApiUrl() {
