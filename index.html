@@ -652,6 +652,36 @@ perfisEmissores.forEach((perfil, index) => {
         document.getElementById('logs').textContent = 'Logs limpos...\n';
     }
 
+    // ===== Helper: parseia resposta "for (;;);" e detecta checkpoint =====
+function parseFbComet(data) {
+  if (typeof data !== 'string') return { kind: 'unknown' };
+
+  // padrão "for (;;);{...json...}"
+  const m = data.match(/^for\s*\(\s*;;\s*\);\s*(\{[\s\S]*\})$/);
+  if (!m) return { kind: 'unknown' };
+
+  let obj;
+  try {
+    obj = JSON.parse(m[1]);
+  } catch (e) {
+    return { kind: 'unknown' };
+  }
+
+  // procura redirect para checkpoint
+  const reqs = obj?.jsmods?.require || [];
+  for (const r of reqs) {
+    if (r[0] === "ServerRedirect" && r[1] === "redirectPageTo") {
+      const url = r[3]?.[0] || "";
+      if (typeof url === 'string' && url.includes("/checkpoint/")) {
+        return { kind: 'checkpoint', url };
+      }
+    }
+  }
+
+  return { kind: 'ok', obj };
+}
+
+
     // Função principal para enviar requisições
     async function enviarRequisicoes() {
         // Validações
@@ -700,12 +730,56 @@ perfisEmissores.forEach((perfil, index) => {
             adicionarLog(' Requisição enviada com sucesso!');
             adicionarLog(' Processando resultados...\n');
 
-            // Processar logs da resposta
-            if (resultado.logs && Array.isArray(resultado.logs)) {
-                resultado.logs.forEach(log => {
-                    adicionarLog(log);
-                });
-            }
+            // Processar logs da resposta (com detecção de checkpoint e erros do FB)
+if (resultado.logs && Array.isArray(resultado.logs)) {
+  const perfisBloqueados = new Set();
+
+  resultado.logs.forEach(log => {
+    const emissor = log?.emissor;
+    const alvo = log?.alvo;
+    const friendRequest = log?.results?.friendRequest;
+    const frData = friendRequest?.data;
+
+    let tratouAlgumErro = false;
+
+    // 1) Resposta string (formato "for (;;);{...}") => detectar checkpoint
+    if (typeof frData === 'string') {
+      const parsed = parseFbComet(frData);
+      if (parsed.kind === 'checkpoint') {
+        adicionarLog(`🚧 Checkpoint exigido para perfil ${emissor}: ${parsed.url}`);
+        mostrarToast(`Perfil ${emissor}: checkpoint de segurança. Faça login e verifique a conta.`, 'warning');
+        perfisBloqueados.add(emissor);
+        const index = perfisEmissores.findIndex(p => p.uid === emissor);
+        if (index !== -1) document.querySelector(`#emissor_${index}`)?.checked = false;
+        tratouAlgumErro = true;
+      }
+    }
+
+    // 2) Resposta objeto com "errors" (bloqueios, limites, etc.)
+    if (!tratouAlgumErro && frData && typeof frData === 'object' && Array.isArray(frData.errors)) {
+      frData.errors.forEach(err => {
+        const resumo = err.summary || "Erro desconhecido";
+        const descricao = err.description || "";
+        const codigo = err.api_error_code || err.code || "sem código";
+        adicionarLog(`⚠️ AVISO PARA PERFIL ${emissor}`);
+        adicionarLog(`Erro ${codigo}: ${resumo}`);
+        adicionarLog(`Descrição: ${descricao}\n`);
+        mostrarToast(`Perfil ${emissor}: ${resumo}`, "warning");
+      });
+      perfisBloqueados.add(emissor);
+      const index = perfisEmissores.findIndex(p => p.uid === emissor);
+      if (index !== -1) document.querySelector(`#emissor_${index}`)?.checked = false;
+      tratouAlgumErro = true;
+    }
+
+    // 3) Sem erro/redirect => OK
+    if (!tratouAlgumErro) {
+      adicionarLog(`✅ Perfil ${emissor} enviou para ${alvo} com sucesso.`);
+    }
+  });
+}
+
+
 
             // Mostrar resumo
             if (resultado.resumo) {
@@ -1015,17 +1089,7 @@ document.querySelectorAll("#selecionar-emissores input[type='checkbox']:checked"
 resultado.logs.forEach(log => {
     const emissor = log.emissor;
     const alvo = log.alvo;
-    const friendRequest = log.results.friendRequest;
-const parsed = parseFb(log.results.friendRequest?.data);
-if (parsed.kind === 'checkpoint') {
-  adicionarLog(`🚧 Checkpoint exigido para perfil ${log.emissor}: ${parsed.url}`);
-  mostrarToast(`Perfil ${log.emissor}: checkpoint de segurança. Faça login e verifique a conta.`, 'warning');
-  perfisBloqueados.add(log.emissor);
-  const idx = perfisEmissores.findIndex(p => p.uid === log.emissor);
-  if (idx !== -1) document.querySelector(`#emissor_${idx}`)?.checked = false;
-  return; // pule o restante
-}
-if (friendRequest && friendRequest.data && friendRequest.data.errors) {
+    const friendRequest = log.results.friendRequest;if (friendRequest && friendRequest.data && friendRequest.data.errors) {
     const erros = friendRequest.data.errors;
 
     erros.forEach(err => {
@@ -1253,23 +1317,5 @@ salvarPerfisNoLocalStorage();
 
 mostrarToast(` ${perfisImportados} perfis importados via texto!`, 'success');
 adicionarLog(` Importação rápida: ${perfisImportados} perfis adicionados via campo de texto.`);}
-function parseFb(data) {
-  if (typeof data !== 'string') return { kind: 'unknown' };
-  const m = data.match(/^for\s*\(\s*;;\s*\);\s*(\{[\s\S]*\})$/);
-  if (!m) return { kind: 'unknown' };
-  const obj = JSON.parse(m[1]);
-
-  // procura redirect para checkpoint
-  const reqs = obj?.jsmods?.require || [];
-  for (const r of reqs) {
-    if (r[0] === "ServerRedirect" && r[1] === "redirectPageTo") {
-      const url = r[3]?.[0] || "";
-      if (url.includes("/checkpoint/")) {
-        return { kind: 'checkpoint', url };
-      }
-    }
-  }
-  return { kind: 'ok', obj };
-}
 </script></body>
 </html>
