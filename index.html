@@ -279,7 +279,7 @@ body {
     <h3 class="section-title">
         <i class="fas fa-user-plus"></i>
         Perfis Emissores
-        <span class="counter" id="emissorCounter">0/500</span>
+        <span class="counter" id="emissorCounter">0/300</span>
     </h3>
 
     <div class="row">
@@ -416,8 +416,8 @@ body {
 
     // Função para adicionar perfil emissor
     function adicionarPerfil() {
-        if (perfisEmissores.length >= 500) {
-            alert('Máximo de 500 perfis emissores atingido!');
+        if (perfisEmissores.length >= 300) {
+            alert('Máximo de 300 perfis emissores atingido!');
             return;
         }
 
@@ -476,7 +476,7 @@ body {
                     <div class="col-md-6">
                         <strong>Cookie:</strong>
 
-                        <code>${perfil.cookie.substring(0, 500)}...</code>
+                        <code>${perfil.cookie.substring(0, 50)}...</code>
                     </div>
                     <div class="col-md-2">
                         <strong>fb_dtsg:</strong>
@@ -556,7 +556,7 @@ perfisEmissores.forEach((perfil, index) => {
 
     // Função para atualizar contadores
     function atualizarContadores() {
-        document.getElementById('emissorCounter').textContent = `${perfisEmissores.length}/50`;
+        document.getElementById('emissorCounter').textContent = `${perfisEmissores.length}/300`;
         document.getElementById('alvoCounter').textContent = `${perfisAlvo.length}/50`;
         document.getElementById('countEmissores').textContent = perfisEmissores.length;
         document.getElementById('countAlvos').textContent = perfisAlvo.length;
@@ -620,7 +620,7 @@ perfisEmissores.forEach((perfil, index) => {
                 if (dados.perfis && Array.isArray(dados.perfis)) {
                     // Confirmar importação
                     if (confirm(`Importar ${dados.perfis.length} perfis? (Isso substituirá os perfis atuais)`)) {
-                        perfisEmissores = dados.perfis.slice(0, 500); // Limitar a 500
+                        perfisEmissores = dados.perfis.slice(0, 300); // Limitar a 300
                         atualizarListaPerfis();
                         atualizarContadores();
                         adicionarLog(` ${perfisEmissores.length} perfis importados com sucesso!`);
@@ -776,8 +776,8 @@ perfisEmissores.forEach((perfil, index) => {
 
     // Melhorar validação do perfil
     function adicionarPerfilMelhorado() {
-        if (perfisEmissores.length >= 500) {
-            alert('Máximo de 500 perfis emissores atingido!');
+        if (perfisEmissores.length >= 300) {
+            alert('Máximo de 300 perfis emissores atingido!');
             return;
         }
 
