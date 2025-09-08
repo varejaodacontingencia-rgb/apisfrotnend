@@ -954,6 +954,21 @@ function toggleTodosEmissores() {
     checkboxes.forEach(cb => cb.checked = allChecked);
 }
 
+function getTokenExtractionError(results) {
+  if (!results) return null;
+  const keys = ["screenTime", "hovercard", "friendRequest"];
+  for (const k of keys) {
+    const r = results[k];
+    if (!r) continue;
+    // caso clássico: success=false + errorType *_FAILED + mensagem fb_dtsg/lsd
+    if (r.success === false && typeof r.error === "string" &&
+        /fb_dtsg|lsd/i.test(r.error)) {
+      return r.error;
+    }
+  }
+  return null;
+}
+
     // Função principal melhorada para enviar requisições em blocos sequenciais
 async function enviarRequisicoes() {
     const emissoresSelecionados = [];
@@ -1026,139 +1041,104 @@ async function enviarRequisicoes() {
                 adicionarLog(` Processando resultados do bloco ${blocoIndex + 1}...`);
 
                 // Processar logs da resposta
-                // Código modificado - função que processa os logs da resposta
-if (resultado.logs && Array.isArray(resultado.logs)) {
-    resultado.logs.forEach(log => {
-        const emissor = log.emissor;
-        const alvoLog = log.alvo;
-        const results = log.results;
-        const friendRequest = results.friendRequest;
+                if (resultado.logs && Array.isArray(resultado.logs)) {
+                    const perfisBloqueados = new Set();
+                    resultado.logs.forEach(log => {
+  const emissor = log.emissor;
+  const alvoLog = log.alvo;
+  const friendRequest = log.results?.friendRequest;
 
-        // NOVO: Verificar especificamente o erro de token (cookies expirados)
-        if (friendRequest && friendRequest.success === false && 
-            friendRequest.error && friendRequest.error.includes("Não foi possível extrair fb_dtsg/lsd")) {
-            
-            adicionarLog(` ERRO CRÍTICO: Cookies expirados ou inválidos no perfil ${emissor}`);
-            adicionarLog(` Detalhes: ${friendRequest.error}`);
-            adicionarLog(` Solução: Atualize os cookies deste perfil na seção "Perfis Emissores"\n`);
-            
-            // Marcar perfil como problemático
-            perfisBloqueados.add(emissor);
-            const index = perfisEmissores.findIndex(p => p.uid === emissor);
-            if (index !== -1) {
-                const checkbox = document.querySelector(`#emissor_${index}`);
-                if (checkbox) {
-                    checkbox.checked = false;
-                }
-            }
-            
-            mostrarToast(`Perfil ${emissor}: Cookies expirados - necessária atualização`, "error");
-        }
-        // Verificar se há checkpoint mesmo com success=true
-        else if (friendRequest && friendRequest.success) {
-            let hasCheckpoint = false;
-            
-            // Verificar se data é uma string e contém padrão específico de checkpoint
-            if (typeof friendRequest.data === 'string') {
-                // Padrão mais específico para detectar checkpoint real
-                if (friendRequest.data.includes('checkpoint') && 
-                    (friendRequest.data.includes('redirectPageTo') || 
-                     friendRequest.data.includes('ServerRedirect'))) {
-                    hasCheckpoint = true;
-                }
-            }
-            // Verificar se data é um objeto e contém a propriedade 'checkpoint' em qualquer nível
-            else if (typeof friendRequest.data === 'object' && friendRequest.data !== null) {
-                // Verificar se é um objeto de checkpoint real
-                const dataString = JSON.stringify(friendRequest.data);
-                
-                // Padrão mais específico para checkpoint em objetos
-                if ((dataString.includes('"checkpoint"') || dataString.includes('/checkpoint/')) &&
-                    (dataString.includes('redirectPageTo') || dataString.includes('ServerRedirect'))) {
-                    hasCheckpoint = true;
-                }
-            }
+  // 1) Detecta erro de tokens (cookies vencidos) em qualquer etapa
+  const tokenErr = getTokenExtractionError(log.results);
+  if (tokenErr) {
+    adicionarLog(` ERRO: Perfil ${emissor} cookies vencidos ao enviar para ${alvoLog}`);
+    adicionarLog(` Motivo: ${tokenErr}`);
+    mostrarToast(`Erro no perfil ${emissor}: cookies vencidos`, "danger");
 
-            if (hasCheckpoint) {
-                // Este é o caso de checkpoint que precisa ser tratado como erro
-                adicionarLog(` ERRO: Perfil ${emissor} encontrou checkpoint ao enviar para ${alvoLog}`);
-                
-                // Adicionar também ao console para logs técnicos
-                console.error(`Checkpoint detectado para emissor ${emissor} e alvo ${alvoLog}`);
-                
-                // Marcar perfil como problemático
-                perfisBloqueados.add(emissor);
-                const index = perfisEmissores.findIndex(p => p.uid === emissor);
-                if (index !== -1) {
-                    const checkbox = document.querySelector(`#emissor_${index}`);
-                    if (checkbox) {
-                        checkbox.checked = false;
-                    }
-                }
-                
-                mostrarToast(`Perfil ${emissor}: Erro de checkpoint detectado`, "warning");
-            } 
-            else if (friendRequest.data && friendRequest.data.errors) {
-                const erros = friendRequest.data.errors;
+    // Desmarca o emissor problemático na lista
+    const index = perfisEmissores.findIndex(p => p.uid === emissor);
+    if (index !== -1) {
+      const checkbox = document.querySelector(`#emissor_${index}`);
+      if (checkbox) checkbox.checked = false;
+    }
+    return; // já tratou este log
+  }
 
-                erros.forEach(err => {
-                    const resumo = err.summary || "Erro desconhecido";
-                    const descricao = err.description || "";
-                    const codigo = err.api_error_code || err.code || "sem código";
+  // 2) Checkpoint mesmo com success=true
+  if (friendRequest && friendRequest.success) {
+    let hasCheckpoint = false;
 
-                    // Mostrar no log e notificação do frontend
-                    adicionarLog(` AVISO PARA PERFIL ${emissor}`);
-                    adicionarLog(`Erro ${codigo}: ${resumo}`);
-                    adicionarLog(`Descrição: ${descricao}\n`);
+    if (typeof friendRequest.data === 'string') {
+      if (friendRequest.data.includes('checkpoint') &&
+          (friendRequest.data.includes('redirectPageTo') || friendRequest.data.includes('ServerRedirect'))) {
+        hasCheckpoint = true;
+      }
+    } else if (friendRequest.data && typeof friendRequest.data === 'object') {
+      const dataString = JSON.stringify(friendRequest.data);
+      if ((dataString.includes('"checkpoint"') || dataString.includes('/checkpoint/')) &&
+          (dataString.includes('redirectPageTo') || dataString.includes('ServerRedirect'))) {
+        hasCheckpoint = true;
+      }
+    }
 
-                    mostrarToast(`Perfil ${emissor}: ${resumo}`, "warning");
-                });
-                perfisBloqueados.add(emissor);
-                const index = perfisEmissores.findIndex(p => p.uid === emissor);
-                if (index !== -1) {
-                    const checkbox = document.querySelector(`#emissor_${index}`);
-                    if (checkbox) {
-                        checkbox.checked = false;
-                    }
-                }
-            } 
-            else {
-                adicionarLog(` Perfil ${emissor} enviou para ${alvoLog} com sucesso.`);
-            }
-        } 
-        else if (friendRequest && friendRequest.data && friendRequest.data.errors) {
-            const erros = friendRequest.data.errors;
+    if (hasCheckpoint) {
+      adicionarLog(` ERRO: Perfil ${emissor} encontrou checkpoint ao enviar para ${alvoLog}`);
+      console.error(`Checkpoint detectado para emissor ${emissor} e alvo ${alvoLog}`);
 
-            erros.forEach(err => {
-                const resumo = err.summary || "Erro desconhecido";
-                const descricao = err.description || "";
-                const codigo = err.api_error_code || err.code || "sem código";
+      const index = perfisEmissores.findIndex(p => p.uid === emissor);
+      if (index !== -1) {
+        const checkbox = document.querySelector(`#emissor_${index}`);
+        if (checkbox) checkbox.checked = false;
+      }
 
-                // Mostrar no log e notificação do frontend
-                adicionarLog(` AVISO PARA PERFIL ${emissor}`);
-                adicionarLog(`Erro ${codigo}: ${resumo}`);
-                adicionarLog(`Descrição: ${descricao}\n`);
+      mostrarToast(`Perfil ${emissor}: Erro de checkpoint detectado`, "warning");
+      return;
+    }
+  }
 
-                mostrarToast(`Perfil ${emissor}: ${resumo}`, "warning");
-            });
-            perfisBloqueados.add(emissor);
-            const index = perfisEmissores.findIndex(p => p.uid === emissor);
-            if (index !== -1) {
-                const checkbox = document.querySelector(`#emissor_${index}`);
-                if (checkbox) {
-                    checkbox.checked = false;
-                }
-            }
-        } 
-        else {
-            adicionarLog(` Perfil ${emissor} enviou para ${alvoLog} com sucesso.`);
-        }
+  // 3) Erros vindos em data.errors (sem checkpoint)
+  if (friendRequest && friendRequest.data && Array.isArray(friendRequest.data.errors)) {
+    const erros = friendRequest.data.errors;
+    erros.forEach(err => {
+      const resumo = err.summary || "Erro desconhecido";
+      const descricao = err.description || "";
+      const codigo = err.api_error_code || err.code || "sem código";
+      adicionarLog(` AVISO PARA PERFIL ${emissor}`);
+      adicionarLog(`Erro ${codigo}: ${resumo}`);
+      adicionarLog(`Descrição: ${descricao}\n`);
+      mostrarToast(`Perfil ${emissor}: ${resumo}`, "warning");
     });
-}
+
+    const index = perfisEmissores.findIndex(p => p.uid === emissor);
+    if (index !== -1) {
+      const checkbox = document.querySelector(`#emissor_${index}`);
+      if (checkbox) checkbox.checked = false;
+    }
+    return;
+  }
+
+  // 4) Caso nada acima: considerar sucesso
+  adicionarLog(` Perfil ${emissor} enviou para ${alvoLog} com sucesso.`);
+});
+                }
 
                 // Mostrar resumo do bloco
                 if (resultado.resumo) {
-                    adicionarLog(` Bloco ${blocoIndex + 1}: ${resultado.resumo.sucessos || 0} sucessos, ${resultado.resumo.erros || 0} erros`);
+                  adicionarLog(` Bloco ${blocoIndex + 1}: ${resultado.resumo.sucessos || 0} sucessos, ${resultado.resumo.erros || 0} erros`);
+                }
+
+                // Mostrar erros detalhados se vierem do backend
+                if (Array.isArray(resultado.errosDetalhados) && resultado.errosDetalhados.length) {
+                  resultado.errosDetalhados.forEach((e, i) => {
+                    const msg = typeof e.erro === 'string' ? e.erro : JSON.stringify(e.erro);
+                    adicionarLog(` ERRO DETALHADO ${i + 1}: Perfil ${e.perfil} → Alvo ${e.alvo}`);
+                    adicionarLog(` Motivo: ${msg}`);
+                    if (/fb_dtsg|lsd/i.test(msg)) {
+                      mostrarToast(`Perfil ${e.perfil}: cookies vencidos`, "danger");
+                    } else {
+                      mostrarToast(`Perfil ${e.perfil}: erro ao enviar`, "danger");
+                    }
+                  });
                 }
 
                 // Esperar entre blocos (exceto após o último bloco)
